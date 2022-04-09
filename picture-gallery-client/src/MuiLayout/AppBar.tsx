@@ -7,6 +7,7 @@ const AppBar = styled(MuiAppBar, {
   open?: boolean;
   drawerwidth: number;
 }>(({ theme, open, drawerwidth }) => ({
+  backgroundColor: process.env.REACT_APP_APPBAR_COLOR ?? "#1976D2",
   transition: theme.transitions.create(["margin", "width"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,

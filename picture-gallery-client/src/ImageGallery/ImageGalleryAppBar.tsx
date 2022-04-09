@@ -27,7 +27,7 @@ function ImageGalleryAppBar({
           <MenuIcon />
         </IconButton>
         <Typography variant="h6" noWrap component="div">
-          {process.env.TITLE ?? "Image Gallery"}
+          {process.env.REACT_APP_TITLE ?? "Simple Picture Gallery"}
         </Typography>
       </Toolbar>
     </AppBar>
