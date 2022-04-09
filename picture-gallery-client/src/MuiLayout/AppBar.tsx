@@ -1,24 +1,24 @@
-import {styled} from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import MuiAppBar from "@mui/material/AppBar";
 
 const AppBar = styled(MuiAppBar, {
-    shouldForwardProp: (prop) => prop !== 'open',
+  shouldForwardProp: (prop) => prop !== "open",
 })<{
-    open?: boolean;
-    drawerwidth: number;
-}>(({theme, open, drawerwidth}) => ({
-    transition: theme.transitions.create(['margin', 'width'], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
+  open?: boolean;
+  drawerwidth: number;
+}>(({ theme, open, drawerwidth }) => ({
+  transition: theme.transitions.create(["margin", "width"], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  ...(open && {
+    width: `calc(100% - ${drawerwidth}px)`,
+    marginLeft: `${drawerwidth}px`,
+    transition: theme.transitions.create(["margin", "width"], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
     }),
-    ...(open && {
-        width: `calc(100% - ${drawerwidth}px)`,
-        marginLeft: `${drawerwidth}px`,
-        transition: theme.transitions.create(['margin', 'width'], {
-            easing: theme.transitions.easing.easeOut,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-    }),
+  }),
 }));
 
 export default AppBar;
