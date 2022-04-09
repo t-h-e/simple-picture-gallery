@@ -40,6 +40,12 @@
           ".tsx"
         ]
       }
+    ],
+    "no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_"
+      }
     ]
   },
   "settings": {

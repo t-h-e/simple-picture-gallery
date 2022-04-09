@@ -1,5 +1,4 @@
 import Drawer from "@mui/material/Drawer";
-import DrawerHeader from "../MuiLayout/DrawerHeader";
 import IconButton from "@mui/material/IconButton";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
@@ -8,9 +7,10 @@ import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import Divider from "@mui/material/Divider";
 import { useTheme } from "@mui/material/styles";
 import { TreeItem, TreeView } from "@mui/lab";
-import { Folders } from "./models";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import React, { useState } from "react";
+import { Folders } from "./models";
+import DrawerHeader from "../MuiLayout/DrawerHeader";
 
 function getDefaultExpanded(pathname: string): string[] {
   const pathParts = [];
@@ -24,7 +24,7 @@ function getDefaultExpanded(pathname: string): string[] {
 
 function generateTreeViewChildren(
   folders: Folders[],
-  navigateAndToggleExpand: (path: string, navigationAllowed: boolean) => void
+  navigateAndToggleExpand: (_path: string, _navigationAllowed: boolean) => void
 ) {
   return (
     <>
@@ -88,7 +88,7 @@ function GenerateTreeView({ root }: { root: Folders }) {
 
   return (
     <TreeView
-      disableSelection={true}
+      disableSelection
       defaultCollapseIcon={<FolderOpenIcon />}
       defaultExpandIcon={<FolderIcon />}
       expanded={expanded}
@@ -102,6 +102,7 @@ function GenerateTreeView({ root }: { root: Folders }) {
       {root.children.length > 0 ? (
         generateTreeViewChildren(root.children, navigateAndToggleExpand)
       ) : (
+        // eslint-disable-next-line react/jsx-no-useless-fragment
         <></>
       )}
     </TreeView>

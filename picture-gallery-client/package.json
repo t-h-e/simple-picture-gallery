@@ -29,8 +29,8 @@
     "build-client": "react-scripts build",
     "test-client": "react-scripts test",
     "eject-client": "react-scripts eject",
-    "lint": "eslint src/*",
-    "lint:fix": "eslint --fix src/*",
+    "lint": "eslint src/**",
+    "lint:fix": "eslint --fix src/**",
     "format": "prettier --write \"**/*.+(ts|tsx)\""
   },
   "eslintConfig": {

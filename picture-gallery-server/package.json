@@ -9,8 +9,8 @@
     "start-server": "node dist/app.js",
     "watch-server": "npx nodemon src/app.ts",
     "run-server": "npm run build-server && npm run start-server",
-    "lint": "eslint src/*",
-    "lint:fix": "eslint --fix src/*",
+    "lint": "eslint src/**",
+    "lint:fix": "eslint --fix src/**",
     "format": "prettier --write \"**/*.+(ts|tsx)\""
   },
   "keywords": [],
