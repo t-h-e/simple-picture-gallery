@@ -1,16 +1,16 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from "react-dom/client";
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
-import ImageGallery from "./ImageGallery";
+import ImageGalleryLayout from "./ImageGalleryLayout";
+import {BrowserRouter} from "react-router-dom";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <ImageGallery />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
+root.render(
+    <BrowserRouter>
+        <ImageGalleryLayout/>
+    </BrowserRouter>
+)
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
