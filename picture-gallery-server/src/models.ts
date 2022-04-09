@@ -1,20 +1,20 @@
 export interface Image {
-    src: string,
-    width: number,
-    height: number
+  src: string;
+  width: number;
+  height: number;
 }
 
 export interface Folder {
-    images: Image[]
+  images: Image[];
 }
 
 export interface Folders {
-    name: string
-    fullPath: string
-    numberOfFiles: number
-    children: Folders[]
+  name: string;
+  fullPath: string;
+  numberOfFiles: number;
+  children: Folders[];
 }
 
 export const a = <T>(v: T): T => {
-    return v;
-}
+  return v;
+};
