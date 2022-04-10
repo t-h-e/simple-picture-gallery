@@ -38,9 +38,12 @@ export const initThumbnailsAsync = (dirPath: string) => {
     return;
   }
   const dirEnts = fs.readdirSync(publicPath + dirPath, { withFileTypes: true });
+  fs.mkdirSync(thumbnailPublicPath + dirPath, { recursive: true });
+  const thumbnails = fs.readdirSync(thumbnailPublicPath + dirPath);
 
   dirEnts
     .filter((f) => f.isFile())
+    .filter((f) => !thumbnails.includes(f.name))
     .map((f) => createThumbnailAsyncForImage(`${dirPath}/${f.name}`));
   dirEnts
     .filter((f) => f.isDirectory())
