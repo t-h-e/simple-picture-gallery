@@ -4,29 +4,28 @@ import path from "path";
 import { publicPath, thumbnailPath, thumbnailPublicPath } from "./paths";
 
 const percentage = 25;
-const minimumPixelForThumbnail = 1000;
+const minimumPixelForThumbnail = 1024;
 
 export const createThumbnailAsyncForImage = (image: string) => {
   sharp(`${publicPath}${image}`)
     .metadata()
     .then((info) => {
-      let width = Math.round((info.width * percentage) / 100);
-      let height = Math.round((info.height * percentage) / 100);
-      // no thumbnail if both sides are smaller than minimumPixelForThumbnail
-      if (
-        info.width <= minimumPixelForThumbnail &&
-        info.height <= minimumPixelForThumbnail
-      ) {
-        width = info.width;
-        height = info.height;
-      }
+      const width = Math.max(
+        Math.min(info.width, minimumPixelForThumbnail),
+        Math.round((info.width * percentage) / 100)
+      );
+      const height = Math.max(
+        Math.min(info.height, minimumPixelForThumbnail),
+        Math.round((info.height * percentage) / 100)
+      );
 
       fs.mkdir(
         thumbnailPublicPath + path.dirname(image),
         { recursive: true },
         () => {
           sharp(`${publicPath}${image}`)
-            .resize(width, height)
+            .withMetadata()
+            .resize(info.width > info.height ? { width } : { height })
             .toFile(`${thumbnailPublicPath}${image}`);
         }
       );
