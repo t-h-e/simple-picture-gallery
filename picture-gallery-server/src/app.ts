@@ -25,10 +25,11 @@ app.get("/api(/*)?", (req, res) => {
     .filter((f) => f.isFile())
     .map((f) => {
       const dimensions = sizeOf(`${publicPath}${requestedPath}/${f.name}`);
+      const widthAndHeightSwap = dimensions.orientation > 4; // see https://exiftool.org/TagNames/EXIF.html
       return {
         src: `/images${normalizedPath}/${f.name}`,
-        width: dimensions.width,
-        height: dimensions.height,
+        width: widthAndHeightSwap ? dimensions.height : dimensions.width,
+        height: widthAndHeightSwap ? dimensions.width : dimensions.height,
       };
     });
 
