@@ -26,7 +26,7 @@
   },
   "scripts": {
     "start-client": "react-scripts start",
-    "build-client": "react-scripts build",
+    "build-client": "react-scripts build && npm run set-environment",
     "test-client": "react-scripts test",
     "eject-client": "react-scripts eject",
     "set-environment": "npx react-inject-env set",

@@ -1,4 +1,5 @@
 .idea
+public/.thumbnail
 
 node_modules
 build
