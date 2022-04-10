@@ -14,7 +14,7 @@ app.use("/images", express.static(publicPath));
 app.use(express.static("../picture-gallery-client/build"));
 
 app.get("/api(/*)?", (req, res) => {
-  const requestedPath = req.path.substring(4);
+  const requestedPath = decodeURI(req.path.substring(4));
 
   const dirents = fs.readdirSync(publicPath + requestedPath, {
     withFileTypes: true,
