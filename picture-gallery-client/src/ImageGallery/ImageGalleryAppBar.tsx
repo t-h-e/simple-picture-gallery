@@ -4,6 +4,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
 import React from "react";
 import AppBar from "../MuiLayout/AppBar";
+import env from "../env";
 
 function ImageGalleryAppBar({
   open,
@@ -27,7 +28,7 @@ function ImageGalleryAppBar({
           <MenuIcon />
         </IconButton>
         <Typography variant="h6" noWrap component="div">
-          {process.env.REACT_APP_TITLE ?? "Simple Picture Gallery"}
+          {env.REACT_APP_TITLE ?? "Simple Picture Gallery"}
         </Typography>
       </Toolbar>
     </AppBar>

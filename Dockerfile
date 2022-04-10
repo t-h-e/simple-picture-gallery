@@ -9,15 +9,15 @@ COPY picture-gallery-server/package*.json picture-gallery-server/
 WORKDIR /usr/src/app/picture-gallery-client
 RUN npm ci --only=production
 COPY picture-gallery-client .
-RUN npm run build
+RUN npm run build-client
 
 # build server
 WORKDIR /usr/src/app/picture-gallery-server
 RUN npm ci --only=production
 COPY picture-gallery-server .
-RUN npm run build
+RUN npm run build-server
 
 VOLUME /usr/src/app/public
 EXPOSE 3001
 # we are still in the server directory
-CMD [ "node", "dist/app.js" ]
+CMD npm --prefix ../picture-gallery-client/ run set-environment && node dist/app.js

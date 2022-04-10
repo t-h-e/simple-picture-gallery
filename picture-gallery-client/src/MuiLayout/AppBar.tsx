@@ -1,5 +1,6 @@
 import { styled } from "@mui/material/styles";
 import MuiAppBar from "@mui/material/AppBar";
+import env from "../env";
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
@@ -7,7 +8,7 @@ const AppBar = styled(MuiAppBar, {
   open?: boolean;
   drawerwidth: number;
 }>(({ theme, open, drawerwidth }) => ({
-  backgroundColor: process.env.REACT_APP_APPBAR_COLOR ?? "#1976D2",
+  backgroundColor: env.REACT_APP_APPBAR_COLOR ?? "#1976D2",
   transition: theme.transitions.create(["margin", "width"], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
