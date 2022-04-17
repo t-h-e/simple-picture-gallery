@@ -17,7 +17,12 @@ RUN npm ci --only=production
 COPY picture-gallery-server .
 RUN npm run build-server
 
+RUN chown node:node -R /usr/src/app/picture-gallery-server/dist && \
+    chown node:node -R /usr/src/app/picture-gallery-client/build
+
 VOLUME /usr/src/app/public
 EXPOSE 3001
+
+USER node
 # we are still in the server directory
 CMD npm --prefix ../picture-gallery-client/ run set-environment && node dist/app.js
