@@ -32,7 +32,7 @@ function ImageGalleryLayout() {
   const [images, setImages] = useState<Photo[]>([]);
 
   useEffect(() => {
-    fetch(`/api/${location.pathname}`)
+    fetch(`/images${location.pathname}`)
       .then((res) => res.json())
       .then((data) => setImages(data.images));
   }, [location.pathname]);

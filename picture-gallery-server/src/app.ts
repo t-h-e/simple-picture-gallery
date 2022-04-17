@@ -1,64 +1,35 @@
 import express from "express";
-import * as fs from "fs";
 import * as path from "path";
-import sizeOf from "image-size";
-import { a, Folder, Folders, Image } from "./models";
+import { a, Folders } from "./models";
 import { walk } from "./fsExtension";
-import {
-  createThumbnailAsyncForImage,
-  initThumbnailsAsync,
-} from "./thumbnails";
-import { publicPath, thumbnailPath, thumbnailPublicPath } from "./paths";
+import { initThumbnailsAsync } from "./thumbnails";
+import { publicPath } from "./paths";
+import { getImages } from "./controller/images";
+import { expressLogger } from "./logging";
 
 const app = express();
 
 const PORT = process.env.PORT || 3001;
 
-app.use(
-  "/images",
-  express.static(publicPath, {
-    maxAge: 2592000000,
-    setHeaders(res, _) {
-      res.setHeader(
-        "Expires",
-        new Date(Date.now() + 2592000000 * 30).toUTCString()
-      );
-    },
-  })
-);
+const withCaching = {
+  maxAge: 2592000000,
+  setHeaders(res, _) {
+    res.setHeader(
+      "Expires",
+      new Date(Date.now() + 2592000000 * 30).toUTCString()
+    );
+  },
+};
+
+app.use("/staticImages", express.static(publicPath, withCaching));
 
 app.use(express.static("../picture-gallery-client/build"));
 
-app.get("/api(/*)?", (req, res) => {
-  const requestedPath = decodeURI(req.path.substring(4));
+app.use(expressLogger);
 
-  const dirents = fs.readdirSync(publicPath + requestedPath, {
-    withFileTypes: true,
-  });
-  const thumbnails = fs.readdirSync(thumbnailPublicPath + requestedPath);
+const imagesPath = "/images";
 
-  const normalizedPath = requestedPath === "/" ? "" : requestedPath;
-  const images: Image[] = dirents
-    .filter((f) => f.isFile())
-    .map((f) => {
-      const thumbnailExists: boolean = thumbnails.includes(f.name);
-      if (!thumbnailExists) {
-        createThumbnailAsyncForImage(`${requestedPath}/${f.name}`);
-      }
-
-      const dimensions = sizeOf(`${publicPath}${requestedPath}/${f.name}`);
-      const widthAndHeightSwap = dimensions.orientation > 4; // see https://exiftool.org/TagNames/EXIF.html
-      return {
-        src: thumbnailExists
-          ? `/images${thumbnailPath}${normalizedPath}/${f.name}`
-          : `/images${normalizedPath}/${f.name}`,
-        width: widthAndHeightSwap ? dimensions.height : dimensions.width,
-        height: widthAndHeightSwap ? dimensions.width : dimensions.height,
-      };
-    });
-
-  res.json(a<Folder>({ images }));
-});
+app.get(`${imagesPath}(/*)?`, getImages(imagesPath));
 
 app.get("/directories", (req, res) => {
   res.json(a<Folders>(walk("")));
