@@ -18,6 +18,12 @@ REACT_APP_TITLE=My Gallery
 REACT_APP_APPBAR_COLOR=#F8AB2D
 ```
 
+Other properties:
+
+```properties
+REACT_APP_FAVICON_HREF=<URL to your favicon>
+```
+
 And run docker with `--env-file .env`
 
 ```shell
