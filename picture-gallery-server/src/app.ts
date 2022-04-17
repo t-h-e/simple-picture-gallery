@@ -14,7 +14,18 @@ const app = express();
 
 const PORT = process.env.PORT || 3001;
 
-app.use("/images", express.static(publicPath));
+app.use(
+  "/images",
+  express.static(publicPath, {
+    maxAge: 2592000000,
+    setHeaders(res, _) {
+      res.setHeader(
+        "Expires",
+        new Date(Date.now() + 2592000000 * 30).toUTCString()
+      );
+    },
+  })
+);
 
 app.use(express.static("../picture-gallery-client/build"));
 
