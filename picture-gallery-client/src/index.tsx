@@ -4,6 +4,9 @@ import "./index.css";
 import { BrowserRouter } from "react-router-dom";
 import reportWebVitals from "./reportWebVitals";
 import ImageGalleryLayout from "./ImageGalleryLayout";
+import { setGalleryTitleAndFavicon } from "./env";
+
+setGalleryTitleAndFavicon();
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
