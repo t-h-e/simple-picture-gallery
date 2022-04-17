@@ -5,7 +5,7 @@ import { walk } from "./fsExtension";
 import { initThumbnailsAsync } from "./thumbnails";
 import { publicPath } from "./paths";
 import { getImages } from "./controller/images";
-import { expressLogger } from "./logging";
+import { consoleLogger, expressLogger } from "./logging";
 
 const app = express();
 
@@ -43,10 +43,9 @@ app.get("*", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  /* eslint-disable no-console */
-  console.log(`Start processing thumbnails async`);
+  consoleLogger.info(`Start processing thumbnails async`);
   initThumbnailsAsync("");
 
+  // eslint-disable-next-line no-console
   return console.log(`Express is listening at http://localhost:${PORT}`);
-  /* eslint-enable no-console */
 });
