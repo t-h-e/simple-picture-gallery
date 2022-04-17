@@ -38,6 +38,6 @@ export const getImages =
       res.json(a<Folder>({ images }));
     } catch (e) {
       consoleLogger.warn(`Error when trying to access ${req.path}: ${e}`);
-      res.status(400).json(`Path ${req.path} not accessible.`);
+      res.status(400).json({ message: `Path ${req.path} not accessible.` });
     }
   };
