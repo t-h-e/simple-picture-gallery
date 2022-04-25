@@ -2,6 +2,7 @@ import sharp from "sharp";
 import fs from "fs";
 import path from "path";
 import { publicPath, thumbnailPath, thumbnailPublicPath } from "./paths";
+import { consoleLogger } from "./logging";
 
 const percentage = 25;
 const minimumPixelForThumbnail = 1024;
@@ -28,6 +29,11 @@ export const createThumbnailAsyncForImage = (image: string) => {
             .resize(info.width > info.height ? { width } : { height })
             .toFile(`${thumbnailPublicPath}${image}`);
         }
+      );
+    })
+    .catch((err) => {
+      consoleLogger.error(
+        `Thumbnail creation of ${publicPath}${image} produced the following error: ${err.message}`
       );
     });
 };

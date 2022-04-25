@@ -1,6 +1,5 @@
 import express from "express";
 import * as path from "path";
-import { a, Folders } from "./models";
 import { walk } from "./fsExtension";
 import { initThumbnailsAsync } from "./thumbnails";
 import { publicPath } from "./paths";
@@ -31,8 +30,8 @@ const imagesPath = "/images";
 
 app.get(`${imagesPath}(/*)?`, getImages(imagesPath));
 
-app.get("/directories", (req, res) => {
-  res.json(a<Folders>(walk("")));
+app.get("/directories", async (req, res) => {
+  res.json(await walk(""));
 });
 
 // All other GET requests not handled before will return our React app
