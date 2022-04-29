@@ -14,10 +14,10 @@ const notEmpty = <TValue>(
   return value !== null && value !== undefined;
 };
 
-const getRequestedPath = (req: express.Request) =>
+const getRequestedPath = (req: express.Request): string =>
   req.params[1] === undefined || req.params[1] === "/" ? "" : req.params[1];
 
-const readThumbnails = (requestedPath: string) => {
+const readThumbnails = (requestedPath: string): string[] => {
   const requestedThumbnailPath = path.posix.join(
     thumbnailPublicPath,
     requestedPath
@@ -27,7 +27,11 @@ const readThumbnails = (requestedPath: string) => {
     : [];
 };
 
-const getSrc = (thumbnailExists: boolean, requestedPath: string, f: Dirent) =>
+const getSrc = (
+  thumbnailExists: boolean,
+  requestedPath: string,
+  f: Dirent
+): string =>
   thumbnailExists
     ? path.posix.join("/staticImages", thumbnailPath, requestedPath, f.name)
     : path.posix.join("/staticImages", requestedPath, f.name);
@@ -37,7 +41,7 @@ const toImage = (
   thumbnailExists: boolean,
   requestedPath: string,
   f: Dirent
-) => {
+): Image => {
   const widthAndHeightSwap = metadata.orientation > 4; // see https://exiftool.org/TagNames/EXIF.html
   return a<Image>({
     src: getSrc(thumbnailExists, requestedPath, f),
@@ -45,6 +49,34 @@ const toImage = (
     height: widthAndHeightSwap ? metadata.width : metadata.height,
   });
 };
+
+const getImagesToBeLoaded = (
+  dirents: Dirent[],
+  thumbnails: string[],
+  requestedPath: string
+): Promise<Image | void>[] =>
+  dirents
+    .filter((f) => f.isFile())
+    .map((f) => {
+      const thumbnailExists: boolean = thumbnails.includes(f.name);
+      if (!thumbnailExists) {
+        createThumbnailAsyncForImage(path.posix.join(requestedPath, f.name));
+      }
+      return sharp(path.posix.join(publicPath, requestedPath, f.name))
+        .metadata()
+        .then((metadata) =>
+          toImage(metadata, thumbnailExists, requestedPath, f)
+        )
+        .catch((err) => {
+          consoleLogger.error(
+            `Reading metadata from ${path.posix.join(
+              publicPath,
+              requestedPath,
+              f.name
+            )} produced the following error: ${err.message}`
+          );
+        });
+    });
 
 export const getImages = async (
   req: express.Request,
@@ -58,31 +90,13 @@ export const getImages = async (
     const dirents = fs.readdirSync(path.posix.join(publicPath, requestedPath), {
       withFileTypes: true,
     });
-
     const thumbnails = readThumbnails(requestedPath);
 
-    const imagesToBeLoaded = dirents
-      .filter((f) => f.isFile())
-      .map((f) => {
-        const thumbnailExists: boolean = thumbnails.includes(f.name);
-        if (!thumbnailExists) {
-          createThumbnailAsyncForImage(path.posix.join(requestedPath, f.name));
-        }
-        return sharp(path.posix.join(publicPath, requestedPath, f.name))
-          .metadata()
-          .then((metadata) =>
-            toImage(metadata, thumbnailExists, requestedPath, f)
-          )
-          .catch((err) => {
-            consoleLogger.error(
-              `Reading metadata from ${path.posix.join(
-                publicPath,
-                requestedPath,
-                f.name
-              )} produced the following error: ${err.message}`
-            );
-          });
-      });
+    const imagesToBeLoaded = getImagesToBeLoaded(
+      dirents,
+      thumbnails,
+      requestedPath
+    );
     const images = (await Promise.all(imagesToBeLoaded)).filter(notEmpty);
     res.json(a<Folder>({ images }));
   } catch (e) {
