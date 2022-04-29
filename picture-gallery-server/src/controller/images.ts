@@ -1,58 +1,92 @@
-import fs from "fs";
+import fs, { Dirent } from "fs";
 import express from "express";
 import sharp from "sharp";
+import path from "path";
 import { publicPath, thumbnailPath, thumbnailPublicPath } from "../paths";
 import { a, Folder, Image } from "../models";
 import { createThumbnailAsyncForImage } from "../thumbnails";
 import { consoleLogger } from "../logging";
+import { securityValidation } from "./securityChecks";
 
-function notEmpty<TValue>(
+const notEmpty = <TValue>(
   value: TValue | void | null | undefined
-): value is TValue {
+): value is TValue => {
   return value !== null && value !== undefined;
-}
+};
 
-export const getImages =
-  (imagesPath: string) =>
-  async (req: express.Request, res: express.Response) => {
-    const requestedPath = decodeURI(req.path.substring(imagesPath.length));
-    const normalizedPath = requestedPath === "/" ? "" : requestedPath;
+const getRequestedPath = (req: express.Request) =>
+  req.params[1] === undefined || req.params[1] === "/" ? "" : req.params[1];
 
-    try {
-      const dirents = fs.readdirSync(publicPath + requestedPath, {
-        withFileTypes: true,
+const readThumbnails = (requestedPath: string) => {
+  const requestedThumbnailPath = path.posix.join(
+    thumbnailPublicPath,
+    requestedPath
+  );
+  return fs.existsSync(requestedThumbnailPath)
+    ? fs.readdirSync(requestedThumbnailPath)
+    : [];
+};
+
+const getSrc = (thumbnailExists: boolean, requestedPath: string, f: Dirent) =>
+  thumbnailExists
+    ? path.posix.join("/staticImages", thumbnailPath, requestedPath, f.name)
+    : path.posix.join("/staticImages", requestedPath, f.name);
+
+const toImage = (
+  metadata: sharp.Metadata,
+  thumbnailExists: boolean,
+  requestedPath: string,
+  f: Dirent
+) => {
+  const widthAndHeightSwap = metadata.orientation > 4; // see https://exiftool.org/TagNames/EXIF.html
+  return a<Image>({
+    src: getSrc(thumbnailExists, requestedPath, f),
+    width: widthAndHeightSwap ? metadata.height : metadata.width,
+    height: widthAndHeightSwap ? metadata.width : metadata.height,
+  });
+};
+
+export const getImages = async (
+  req: express.Request,
+  res: express.Response
+) => {
+  const requestedPath = getRequestedPath(req);
+
+  try {
+    securityValidation(requestedPath);
+
+    const dirents = fs.readdirSync(path.posix.join(publicPath, requestedPath), {
+      withFileTypes: true,
+    });
+
+    const thumbnails = readThumbnails(requestedPath);
+
+    const imagesToBeLoaded = dirents
+      .filter((f) => f.isFile())
+      .map((f) => {
+        const thumbnailExists: boolean = thumbnails.includes(f.name);
+        if (!thumbnailExists) {
+          createThumbnailAsyncForImage(path.posix.join(requestedPath, f.name));
+        }
+        return sharp(path.posix.join(publicPath, requestedPath, f.name))
+          .metadata()
+          .then((metadata) =>
+            toImage(metadata, thumbnailExists, requestedPath, f)
+          )
+          .catch((err) => {
+            consoleLogger.error(
+              `Reading metadata from ${path.posix.join(
+                publicPath,
+                requestedPath,
+                f.name
+              )} produced the following error: ${err.message}`
+            );
+          });
       });
-      const thumbnails = fs.readdirSync(thumbnailPublicPath + requestedPath);
-
-      const imagesToBeLoaded = dirents
-        .filter((f) => f.isFile())
-        .map((f) => {
-          const thumbnailExists: boolean = thumbnails.includes(f.name);
-          if (!thumbnailExists) {
-            createThumbnailAsyncForImage(`${requestedPath}/${f.name}`);
-          }
-          return sharp(`${publicPath}${requestedPath}/${f.name}`)
-            .metadata()
-            .then((metadata) => {
-              const widthAndHeightSwap = metadata.orientation > 4; // see https://exiftool.org/TagNames/EXIF.html
-              return a<Image>({
-                src: thumbnailExists
-                  ? `/staticImages${thumbnailPath}${normalizedPath}/${f.name}`
-                  : `/staticImages${normalizedPath}/${f.name}`,
-                width: widthAndHeightSwap ? metadata.height : metadata.width,
-                height: widthAndHeightSwap ? metadata.width : metadata.height,
-              });
-            })
-            .catch((err) => {
-              consoleLogger.error(
-                `Reading metadata from ${publicPath}${requestedPath}/${f.name} produced the following error: ${err.message}`
-              );
-            });
-        });
-      const images = (await Promise.all(imagesToBeLoaded)).filter(notEmpty);
-      res.json(a<Folder>({ images }));
-    } catch (e) {
-      consoleLogger.warn(`Error when trying to access ${req.path}: ${e}`);
-      res.status(400).json({ message: `Path ${req.path} not accessible.` });
-    }
-  };
+    const images = (await Promise.all(imagesToBeLoaded)).filter(notEmpty);
+    res.json(a<Folder>({ images }));
+  } catch (e) {
+    consoleLogger.warn(`Error when trying to access ${req.path}: ${e}`);
+    res.status(400).json({ message: `Path ${req.path} not accessible.` });
+  }
+};

@@ -8,7 +8,8 @@ const percentage = 25;
 const minimumPixelForThumbnail = 1024;
 
 export const createThumbnailAsyncForImage = (image: string) => {
-  sharp(`${publicPath}${image}`)
+  const publicImagePath = path.posix.join(publicPath, image);
+  sharp(publicImagePath)
     .metadata()
     .then((info) => {
       const width = Math.max(
@@ -21,19 +22,19 @@ export const createThumbnailAsyncForImage = (image: string) => {
       );
 
       fs.mkdir(
-        thumbnailPublicPath + path.dirname(image),
+        path.posix.join(thumbnailPublicPath, path.dirname(image)),
         { recursive: true },
         () => {
-          sharp(`${publicPath}${image}`)
+          sharp(publicImagePath)
             .withMetadata()
             .resize(info.width > info.height ? { width } : { height })
-            .toFile(`${thumbnailPublicPath}${image}`);
+            .toFile(`${path.posix.join(thumbnailPublicPath, image)}`);
         }
       );
     })
     .catch((err) => {
       consoleLogger.error(
-        `Thumbnail creation of ${publicPath}${image} produced the following error: ${err.message}`
+        `Thumbnail creation of ${publicImagePath} produced the following error: ${err.message}`
       );
     });
 };
@@ -42,9 +43,15 @@ export const initThumbnailsAsync = (dirPath: string) => {
   if (dirPath.includes(thumbnailPath)) {
     return;
   }
-  const dirEnts = fs.readdirSync(publicPath + dirPath, { withFileTypes: true });
-  fs.mkdirSync(thumbnailPublicPath + dirPath, { recursive: true });
-  const thumbnails = fs.readdirSync(thumbnailPublicPath + dirPath);
+  const dirEnts = fs.readdirSync(path.posix.join(publicPath, dirPath), {
+    withFileTypes: true,
+  });
+  fs.mkdirSync(path.posix.join(thumbnailPublicPath, dirPath), {
+    recursive: true,
+  });
+  const thumbnails = fs.readdirSync(
+    path.posix.join(thumbnailPublicPath, dirPath)
+  );
 
   dirEnts
     .filter((f) => f.isFile())

@@ -28,7 +28,7 @@ app.use(expressLogger);
 
 const imagesPath = "/images";
 
-app.get(`${imagesPath}(/*)?`, getImages(imagesPath));
+app.get(`${imagesPath}(/*)?`, getImages);
 
 app.get("/directories", async (req, res) => {
   res.json(await walk(""));
