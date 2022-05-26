@@ -2,6 +2,7 @@ import fs, { Dirent } from "fs";
 import express from "express";
 import sharp from "sharp";
 import path from "path";
+import natsort from "natsort";
 import { publicPath, thumbnailPath, thumbnailPublicPath } from "../paths";
 import { a, Folder, Image } from "../models";
 import { createThumbnailAsyncForImage } from "../thumbnails";
@@ -57,6 +58,9 @@ const getImagesToBeLoaded = (
 ): Promise<Image | void>[] =>
   dirents
     .filter((f) => f.isFile())
+    // sorts by name in a natural way
+    // could be made configurable for sorting in other ways (e.g. date of creation)
+    .sort((file1, file2) => natsort()(file1.name, file2.name))
     .map((f) => {
       const thumbnailExists: boolean = thumbnails.includes(f.name);
       if (!thumbnailExists) {
