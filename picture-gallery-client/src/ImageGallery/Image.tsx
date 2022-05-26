@@ -1,10 +1,12 @@
-import { PhotoProps, RenderPhoto } from "react-photo-album";
+import { PhotoProps } from "react-photo-album";
 import React from "react";
 import { Backdrop } from "@mui/material";
+import { ImageWithThumbnail } from "./models";
 
-export const Image: RenderPhoto = ({
-  imageProps: { alt, style, ...rest },
-}: PhotoProps): JSX.Element => {
+export const Image = <T extends ImageWithThumbnail>({
+  imageProps: { alt, style, src: _useSrcAndThumbnailFromPhoto, ...rest },
+  photo,
+}: PhotoProps<T>): JSX.Element => {
   const [open, setOpen] = React.useState(false);
   const handleClose = () => {
     setOpen(false);
@@ -21,6 +23,7 @@ export const Image: RenderPhoto = ({
           ...style,
         }}
         {...rest}
+        src={photo.thumbnail}
         onClick={handleToggle}
       />
       <Backdrop
@@ -28,7 +31,7 @@ export const Image: RenderPhoto = ({
         open={open}
         onClick={handleClose}
       >
-        <img alt={alt} {...rest} />
+        <img alt={alt} {...rest} src={photo.src} />
       </Backdrop>
     </>
   );

@@ -1,5 +1,6 @@
 export interface Image {
   src: string;
+  thumbnail: string;
   width: number;
   height: number;
 }

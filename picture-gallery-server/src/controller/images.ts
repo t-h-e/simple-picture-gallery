@@ -28,14 +28,17 @@ const readThumbnails = (requestedPath: string): string[] => {
     : [];
 };
 
-const getSrc = (
+const getSrc = (requestedPath: string, f: Dirent): string =>
+  path.posix.join("/staticImages", requestedPath, f.name);
+
+const getThumbnail = (
   thumbnailExists: boolean,
   requestedPath: string,
   f: Dirent
 ): string =>
   thumbnailExists
     ? path.posix.join("/staticImages", thumbnailPath, requestedPath, f.name)
-    : path.posix.join("/staticImages", requestedPath, f.name);
+    : getSrc(requestedPath, f);
 
 const toImage = (
   metadata: sharp.Metadata,
@@ -45,7 +48,8 @@ const toImage = (
 ): Image => {
   const widthAndHeightSwap = metadata.orientation > 4; // see https://exiftool.org/TagNames/EXIF.html
   return a<Image>({
-    src: getSrc(thumbnailExists, requestedPath, f),
+    src: getSrc(requestedPath, f),
+    thumbnail: getThumbnail(thumbnailExists, requestedPath, f),
     width: widthAndHeightSwap ? metadata.height : metadata.width,
     height: widthAndHeightSwap ? metadata.width : metadata.height,
   });

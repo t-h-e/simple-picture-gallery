@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Photo } from "react-photo-album";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
-import { Folders } from "./ImageGallery/models";
+import { Folders, ImageWithThumbnail } from "./ImageGallery/models";
 import ImageGalleryAppBar from "./ImageGallery/ImageGalleryAppBar";
 import DrawerHeader from "./MuiLayout/DrawerHeader";
 import ImageGalleryDrawer from "./ImageGallery/ImageGalleryDrawer";
@@ -18,7 +17,7 @@ function ImageGalleryLayout() {
   const [open, setOpen] = useState(true);
   const [error, setError] = useState(false);
   const [imagesLoaded, setImagesLoaded] = useState(false);
-  const [images, setImages] = useState<Photo[]>([]);
+  const [images, setImages] = useState<ImageWithThumbnail[]>([]);
   const [folders, setFolders] = useState<Folders>({
     name: "Home",
     fullPath: "/",
