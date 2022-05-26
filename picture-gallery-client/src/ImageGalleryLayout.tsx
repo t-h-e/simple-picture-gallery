@@ -2,14 +2,13 @@ import React, { useEffect, useState } from "react";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import { useLocation, useNavigate } from "react-router-dom";
-import { CircularProgress } from "@mui/material";
 import { Folders, ImageWithThumbnail } from "./ImageGallery/models";
 import ImageGalleryAppBar from "./ImageGallery/ImageGalleryAppBar";
 import DrawerHeader from "./MuiLayout/DrawerHeader";
 import ImageGalleryDrawer from "./ImageGallery/ImageGalleryDrawer";
 import ImageGallery from "./ImageGallery/ImageGallery";
 import Main from "./MuiLayout/Main";
-import env from "./env";
+import { Spinner } from "./ImageGallery/Spinner";
 
 const drawerWidth = 240;
 
@@ -87,13 +86,7 @@ function ImageGalleryLayout() {
       />
       <Main open={open} drawerwidth={drawerWidth}>
         <DrawerHeader />
-        {imagesLoaded ? (
-          <ImageGallery images={images} />
-        ) : (
-          <CircularProgress
-            style={{ color: env.REACT_APP_APPBAR_COLOR ?? "#1976D2" }}
-          />
-        )}
+        {imagesLoaded ? <ImageGallery images={images} /> : <Spinner />}
       </Main>
     </Box>
   );
