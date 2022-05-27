@@ -6,6 +6,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import { Folders } from "./models";
 import Toolbar from "@mui/material/Toolbar";
+import { useTheme } from "@mui/material";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { smallScreenMediaQuery } from "../ImageGalleryLayout";
 
 function getDefaultExpanded(pathname: string): string[] {
   const pathParts = [];
@@ -105,23 +108,52 @@ function GenerateTreeView({ root }: { root: Folders }) {
 }
 
 export const ImageGalleryDrawer = ({
+  open,
   drawerWidth,
   folder,
+  handleDrawerToggle,
 }: {
+  open: boolean;
   drawerWidth: number;
   folder: Folders;
+  handleDrawerToggle: () => void;
 }) => {
-  return (
+  const theme = useTheme();
+  const smallScreen = !useMediaQuery(smallScreenMediaQuery);
+
+  const drawerContent = (
+    <>
+      <Toolbar sx={{ marginBottom: 3 }} />
+      <GenerateTreeView root={folder} />
+    </>
+  );
+
+  return smallScreen ? (
+    <Drawer
+      variant="temporary"
+      anchor={theme.direction === "rtl" ? "right" : "left"}
+      open={open}
+      onClose={handleDrawerToggle}
+      style={{ width: drawerWidth }}
+      ModalProps={{
+        keepMounted: true, // Better open performance on mobile.
+      }}
+    >
+      {drawerContent}
+    </Drawer>
+  ) : (
     <Drawer
       variant="permanent"
       sx={{
         width: drawerWidth,
         flexShrink: 0,
-        [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: "border-box" },
+        [`& .MuiDrawer-paper`]: {
+          width: drawerWidth,
+          boxSizing: "border-box",
+        },
       }}
     >
-      <Toolbar />
-      <GenerateTreeView root={folder} />
+      {drawerContent}
     </Drawer>
   );
 };

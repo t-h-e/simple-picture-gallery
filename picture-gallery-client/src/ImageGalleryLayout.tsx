@@ -10,11 +10,14 @@ import { Spinner } from "./ImageGallery/Spinner";
 import Toolbar from "@mui/material/Toolbar";
 
 const drawerWidth = 240;
+export const smallScreenMediaQuery = `(min-width:${drawerWidth * 3}px)`;
 
 function ImageGalleryLayout() {
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [error, setError] = useState(false);
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [images, setImages] = useState<ImageWithThumbnail[]>([]);
+
   const [folders, setFolders] = useState<Folders>({
     name: "Home",
     fullPath: "/",
@@ -24,6 +27,10 @@ function ImageGalleryLayout() {
 
   const location = useLocation();
   const navigate = useNavigate();
+
+  function handleDrawerToggle() {
+    setDrawerOpen(!drawerOpen);
+  }
 
   useEffect(() => {
     setImages([]);
@@ -63,8 +70,16 @@ function ImageGalleryLayout() {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <ImageGalleryAppBar />
-      <ImageGalleryDrawer drawerWidth={drawerWidth} folder={folders} />
+      <ImageGalleryAppBar
+        open={drawerOpen}
+        onDrawerOpenClick={handleDrawerToggle}
+      />
+      <ImageGalleryDrawer
+        open={drawerOpen}
+        drawerWidth={drawerWidth}
+        folder={folders}
+        handleDrawerToggle={handleDrawerToggle}
+      />
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Toolbar />
         {imagesLoaded ? <ImageGallery images={images} /> : <Spinner />}
