@@ -1,16 +1,11 @@
 import Drawer from "@mui/material/Drawer";
-import IconButton from "@mui/material/IconButton";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import FolderIcon from "@mui/icons-material/Folder";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
-import Divider from "@mui/material/Divider";
-import { useTheme } from "@mui/material/styles";
 import { TreeItem, TreeView } from "@mui/lab";
 import { useLocation, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import { Folders } from "./models";
-import DrawerHeader from "../MuiLayout/DrawerHeader";
+import Toolbar from "@mui/material/Toolbar";
 
 function getDefaultExpanded(pathname: string): string[] {
   const pathParts = [];
@@ -109,45 +104,24 @@ function GenerateTreeView({ root }: { root: Folders }) {
   );
 }
 
-function ImageGalleryDrawer({
-  open,
+export const ImageGalleryDrawer = ({
   drawerWidth,
   folder,
-  onDrawerCloseClick,
 }: {
-  open: boolean;
   drawerWidth: number;
   folder: Folders;
-  onDrawerCloseClick: () => void;
-}) {
-  const theme = useTheme();
+}) => {
   return (
     <Drawer
+      variant="permanent"
       sx={{
         width: drawerWidth,
         flexShrink: 0,
-        "& .MuiDrawer-paper": {
-          width: drawerWidth,
-          boxSizing: "border-box",
-        },
+        [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: "border-box" },
       }}
-      variant="persistent"
-      anchor="left"
-      open={open}
     >
-      <DrawerHeader>
-        <IconButton onClick={onDrawerCloseClick}>
-          {theme.direction === "ltr" ? (
-            <ChevronLeftIcon />
-          ) : (
-            <ChevronRightIcon />
-          )}
-        </IconButton>
-      </DrawerHeader>
-      <Divider />
+      <Toolbar />
       <GenerateTreeView root={folder} />
     </Drawer>
   );
-}
-
-export default ImageGalleryDrawer;
+};

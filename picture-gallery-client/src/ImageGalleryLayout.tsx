@@ -3,17 +3,15 @@ import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Folders, ImageWithThumbnail } from "./ImageGallery/models";
-import ImageGalleryAppBar from "./ImageGallery/ImageGalleryAppBar";
-import DrawerHeader from "./MuiLayout/DrawerHeader";
-import ImageGalleryDrawer from "./ImageGallery/ImageGalleryDrawer";
+import { ImageGalleryAppBar } from "./ImageGallery/ImageGalleryAppBar";
+import { ImageGalleryDrawer } from "./ImageGallery/ImageGalleryDrawer";
 import ImageGallery from "./ImageGallery/ImageGallery";
-import Main from "./MuiLayout/Main";
 import { Spinner } from "./ImageGallery/Spinner";
+import Toolbar from "@mui/material/Toolbar";
 
 const drawerWidth = 240;
 
 function ImageGalleryLayout() {
-  const [open, setOpen] = useState(true);
   const [error, setError] = useState(false);
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [images, setImages] = useState<ImageWithThumbnail[]>([]);
@@ -26,14 +24,6 @@ function ImageGalleryLayout() {
 
   const location = useLocation();
   const navigate = useNavigate();
-
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
-
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
 
   useEffect(() => {
     setImages([]);
@@ -73,21 +63,12 @@ function ImageGalleryLayout() {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <ImageGalleryAppBar
-        open={open}
-        drawerWidth={drawerWidth}
-        onDrawerOpenClick={handleDrawerOpen}
-      />
-      <ImageGalleryDrawer
-        open={open}
-        drawerWidth={drawerWidth}
-        folder={folders}
-        onDrawerCloseClick={handleDrawerClose}
-      />
-      <Main open={open} drawerwidth={drawerWidth}>
-        <DrawerHeader />
+      <ImageGalleryAppBar />
+      <ImageGalleryDrawer drawerWidth={drawerWidth} folder={folders} />
+      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
+        <Toolbar />
         {imagesLoaded ? <ImageGallery images={images} /> : <Spinner />}
-      </Main>
+      </Box>
     </Box>
   );
 }
