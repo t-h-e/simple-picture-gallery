@@ -1,0 +1,11 @@
+{
+  "name": "picture-gallery-client",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "react-inject-env": "2.1.0"
+  },
+  "scripts": {
+    "set-environment": "npx react-inject-env set"
+  }
+}
