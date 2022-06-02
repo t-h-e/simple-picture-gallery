@@ -10,7 +10,7 @@ RUN mkdir built && \
     mv build built && \
     mv package.minimize.docker.json built/package.json && \
     cp package-lock.json built && \
-    npm --prefix built/ ci --only=production
+    npm ci --prefix ./built --only=production
 
 FROM node:16.14.2-alpine as server-builder
 
@@ -33,4 +33,4 @@ EXPOSE 3001
 
 USER node
 WORKDIR /usr/src/app/picture-gallery-server
-CMD npm --prefix ../picture-gallery-client/ run set-environment && node dist/app.js
+CMD npm run --prefix ../picture-gallery-client/ set-environment && node dist/app.js
