@@ -31,15 +31,15 @@
     "web-vitals": "2.1.4"
   },
   "scripts": {
-    "start-client": "react-scripts start",
-    "build-client": "react-scripts build && npm run set-environment",
-    "test-client": "react-scripts test",
-    "eject-client": "react-scripts eject",
-    "set-environment": "npx react-inject-env set",
+    "format": "prettier --write \"**/*.+(ts|tsx)\"",
+    "format:check": "prettier --check \"**/*.+(ts|tsx)\"",
     "lint": "eslint src/**",
     "lint:fix": "eslint --fix src/**",
-    "format": "prettier --write \"**/*.+(ts|tsx)\"",
-    "format:check": "prettier --check \"**/*.+(ts|tsx)\""
+    "client:build": "react-scripts build && npm run set-environment",
+    "client:eject": "react-scripts eject",
+    "client:start": "react-scripts start",
+    "client:test": "react-scripts test",
+    "set-environment": "npx react-inject-env set"
   },
   "eslintConfig": {
     "extends": [

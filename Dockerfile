@@ -4,7 +4,7 @@ COPY picture-gallery-client/package*.json /usr/src/app/picture-gallery-client/
 WORKDIR /usr/src/app/picture-gallery-client
 RUN npm ci --only=production
 COPY picture-gallery-client .
-RUN npm run build-client
+RUN npm run client:build
 
 RUN mkdir built && \
     mv build built && \
@@ -18,7 +18,7 @@ COPY picture-gallery-server/package*.json /usr/src/app/picture-gallery-server/
 WORKDIR /usr/src/app/picture-gallery-server
 RUN npm ci
 COPY picture-gallery-server .
-RUN npm run build-server
+RUN npm run server:build
 
 RUN mkdir built && \
     mv dist node_modules built

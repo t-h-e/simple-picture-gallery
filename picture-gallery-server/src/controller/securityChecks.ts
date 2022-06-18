@@ -1,7 +1,7 @@
 import path from "path";
 import { consoleLogger } from "../logging";
 
-// in case the requested path starts with ".." and tries to traverse outside of the image directory
+// in case the requested path starts with ".." and tries to traverse outside the image directory
 const dirToCheckAccessViolation = "anyDir";
 
 export const securityValidation = (requestedPath: string) => {
