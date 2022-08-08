@@ -8,9 +8,8 @@
     "install-all": "npm i && concurrently npm:install:client npm:install:server",
     "install:client": "cd picture-gallery-client && npm i",
     "install:server": "cd picture-gallery-server && npm i",
-    "start-all": "npm run build:client && concurrently npm:start:client npm:run:server",
-    "build:client": "npm run --prefix picture-gallery-client client:build",
-    "start:client": "npm run --prefix picture-gallery-client client:start",
+    "start-all": "concurrently npm:run:client npm:run:server",
+    "run:client": "npm run --prefix picture-gallery-client client:run",
     "run:server": "npm run --prefix picture-gallery-server server:run",
     "docker:buildImage": "docker build . -t simple-picture-gallery"
   }

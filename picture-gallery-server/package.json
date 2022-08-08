@@ -9,7 +9,7 @@
     "lint:fix": "eslint --fix src/**",
     "server:build": "npx tsc",
     "server:start": "node dist/app.js",
-    "server:run": "npm run build-server && npm run start-server",
+    "server:run": "npm run server:build && npm run server:start",
     "server:watch": "npx nodemon src/app.ts",
     "test": "jest",
     "test:watch": "jest --watch"

@@ -4,3 +4,6 @@ public/.thumbnail
 node_modules
 build
 dist
+
+# only on top level
+package-lock.json

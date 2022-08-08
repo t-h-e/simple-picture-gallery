@@ -1,0 +1,12 @@
+.yarl__thumbnails_top .yarl__thumbnails_container::before, .yarl__thumbnails_bottom .yarl__thumbnails_container::before {
+    background: initial;
+}
+.yarl__thumbnails_top .yarl__thumbnails_container::after, .yarl__thumbnails_bottom .yarl__thumbnails_container::after {
+    background: initial;
+}
+.yarl__thumbnails_start .yarl__thumbnails_container::before, .yarl__thumbnails_end .yarl__thumbnails_container::before {
+    background: initial;
+}
+.yarl__thumbnails_start .yarl__thumbnails_container::after, .yarl__thumbnails_end .yarl__thumbnails_container::after {
+    background: initial;
+}
