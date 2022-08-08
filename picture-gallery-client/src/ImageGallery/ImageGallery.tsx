@@ -9,7 +9,6 @@ import { Fullscreen } from "yet-another-react-lightbox/plugins/fullscreen";
 import { Slideshow } from "yet-another-react-lightbox/plugins/slideshow";
 import { Thumbnails } from "yet-another-react-lightbox/plugins/thumbnails";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
-import "./yarl.thumbnails.override.css";
 import { Zoom } from "yet-another-react-lightbox/plugins/zoom";
 
 function ImageGallery({ images }: { images: ImageWithThumbnail[] }) {
@@ -41,8 +40,11 @@ function ImageGallery({ images }: { images: ImageWithThumbnail[] }) {
         close={() => setIndex(-1)}
         controller={{ closeOnBackdropClick: true }}
         plugins={[Fullscreen, Slideshow, Thumbnails, Zoom]}
+        thumbnails={{ vignette: false }}
         styles={{
-          root: { "--yarl__color_backdrop": "rgba(0, 0, 0, 0.85)" } as any,
+          root: {
+            "--yarl__color_backdrop": "rgba(0, 0, 0, 0.85)",
+          },
         }}
       />
     </>
