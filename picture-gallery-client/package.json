@@ -21,6 +21,7 @@
     "eslint-plugin-prettier": "4.2.1",
     "eslint-plugin-react": "7.30.1",
     "eslint-plugin-react-hooks": "4.4.0",
+    "eslint-plugin-jest": "26.5.3",
     "react": "18.0.0",
     "react-dom": "18.0.0",
     "react-photo-album": "1.12.0",
@@ -41,7 +42,8 @@
     "client:run": "npm run client:build && npm run client:start",
     "client:start": "react-scripts start",
     "client:test": "react-scripts test",
-    "set-environment": "npx react-inject-env set"
+    "set-environment": "npx react-inject-env set",
+    "test": "jest"
   },
   "eslintConfig": {
     "extends": [
@@ -67,6 +69,8 @@
     "@testing-library/user-event": "14.4.2",
     "@typescript-eslint/eslint-plugin": "5.32.0",
     "@typescript-eslint/parser": "5.32.0",
-    "prettier": "2.7.1"
+    "prettier": "2.7.1",
+    "ts-jest": "27.1.5",
+    "ts-node": "10.7.0"
   }
 }

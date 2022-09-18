@@ -77,7 +77,7 @@ function ImageGalleryLayout() {
       <ImageGalleryDrawer
         open={drawerOpen}
         drawerWidth={drawerWidth}
-        folder={folders}
+        folders={folders}
         handleDrawerToggle={handleDrawerToggle}
       />
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>

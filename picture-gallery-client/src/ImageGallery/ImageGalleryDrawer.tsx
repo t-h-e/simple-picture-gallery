@@ -9,16 +9,7 @@ import Toolbar from "@mui/material/Toolbar";
 import { useTheme } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { smallScreenMediaQuery } from "../ImageGalleryLayout";
-
-function getDefaultExpanded(pathname: string): string[] {
-  const pathParts = [];
-  let curPathName = pathname.substring(0, pathname.lastIndexOf("/"));
-  while (curPathName.length > 0) {
-    pathParts.push(curPathName);
-    curPathName = curPathName.substring(0, curPathName.lastIndexOf("/"));
-  }
-  return pathParts;
-}
+import { getDefaultExpanded } from "./PathToExpaned";
 
 function generateTreeViewChildren(
   folders: Folders[],
@@ -57,7 +48,7 @@ function generateTreeViewChildren(
   );
 }
 
-function GenerateTreeView({ root }: { root: Folders }) {
+const GenerateTreeView = ({ root }: { root: Folders }) => {
   const location = useLocation();
   const navigate = useNavigate();
   const [expanded, setExpanded] = useState<string[]>(
@@ -105,17 +96,17 @@ function GenerateTreeView({ root }: { root: Folders }) {
       )}
     </TreeView>
   );
-}
+};
 
 export const ImageGalleryDrawer = ({
   open,
   drawerWidth,
-  folder,
+  folders,
   handleDrawerToggle,
 }: {
   open: boolean;
   drawerWidth: number;
-  folder: Folders;
+  folders: Folders;
   handleDrawerToggle: () => void;
 }) => {
   const theme = useTheme();
@@ -124,7 +115,7 @@ export const ImageGalleryDrawer = ({
   const drawerContent = (
     <>
       <Toolbar sx={{ marginBottom: 3 }} />
-      <GenerateTreeView root={folder} />
+      <GenerateTreeView root={folders} />
     </>
   );
 
