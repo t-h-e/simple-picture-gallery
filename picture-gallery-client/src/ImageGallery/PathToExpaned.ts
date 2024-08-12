@@ -1,6 +1,4 @@
-import { Pathname } from "history";
-
-export const getDefaultExpanded = (pathname: Pathname): string[] => {
+export const getDefaultExpanded = (pathname: string): string[] => {
   const pathParts = [];
   let curPathname = pathname.startsWith("/") ? pathname.slice(1) : pathname;
   while (curPathname.endsWith("/")) {

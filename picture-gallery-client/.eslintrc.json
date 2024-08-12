@@ -1,8 +1,7 @@
 {
   "env": {
     "browser": true,
-    "es2021": true,
-    "jest/globals": true
+    "es2021": true
   },
   "extends": [
     "plugin:react/recommended",
@@ -19,8 +18,7 @@
   },
   "plugins": [
     "react",
-    "@typescript-eslint",
-    "jest"
+    "@typescript-eslint"
   ],
   "ignorePatterns": [
     "**/*.css"
@@ -55,6 +53,9 @@
     "import/resolver": {
       "typescript": {
       }
+    },
+    "react": {
+      "version": "detect"
     }
   }
 }

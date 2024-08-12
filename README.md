@@ -14,14 +14,14 @@ docker run -p 3005:3001 -v /mnt/data/pictures:/usr/src/app/public --name my-pict
 Create an environment file `.env`:
 
 ```properties
-REACT_APP_TITLE=My Gallery
-REACT_APP_APPBAR_COLOR=#F8AB2D
+VITE_TITLE=My Gallery
+VITE_APPBAR_COLOR=#F8AB2D
 ```
 
 Other properties:
 
 ```properties
-REACT_APP_FAVICON_HREF=<URL to your favicon>
+VITE_FAVICON_HREF=<URL to your favicon>
 ```
 
 And run docker with `--env-file .env`

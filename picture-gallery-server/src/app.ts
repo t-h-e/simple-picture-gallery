@@ -15,7 +15,7 @@ const withCaching = {
   setHeaders(res, _) {
     res.setHeader(
       "Expires",
-      new Date(Date.now() + 2592000000 * 30).toUTCString()
+      new Date(Date.now() + 2592000000 * 30).toUTCString(),
     );
   },
 };
@@ -26,9 +26,7 @@ app.use(express.static("../picture-gallery-client/build"));
 
 app.use(expressLogger);
 
-const imagesPath = "/images";
-
-app.get(`${imagesPath}(/*)?`, getImages);
+app.get(`/images(/*)?`, getImages);
 
 app.get("/directories", async (req, res) => {
   res.json(await walk(""));
@@ -37,7 +35,7 @@ app.get("/directories", async (req, res) => {
 // All other GET requests not handled before will return our React app
 app.get("*", (req, res) => {
   res.sendFile(
-    path.resolve(__dirname, "../../picture-gallery-client/build/index.html")
+    path.resolve(__dirname, "../../picture-gallery-client/build/index.html"),
   );
 });
 

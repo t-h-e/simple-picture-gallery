@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
+import Box from "@mui/material/Box";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Folders, ImageWithThumbnail } from "./ImageGallery/models";
 import { ImageGalleryAppBar } from "./ImageGallery/ImageGalleryAppBar";

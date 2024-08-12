@@ -1,15 +1,14 @@
 import PhotoAlbum from "react-photo-album";
 import React, { useState } from "react";
-import { Image } from "./Image";
 import { ImageWithThumbnail } from "./models";
 import { Lightbox } from "yet-another-react-lightbox";
 import "yet-another-react-lightbox/styles.css";
 
-import { Fullscreen } from "yet-another-react-lightbox/plugins/fullscreen";
-import { Slideshow } from "yet-another-react-lightbox/plugins/slideshow";
-import { Thumbnails } from "yet-another-react-lightbox/plugins/thumbnails";
+import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
+import Slideshow from "yet-another-react-lightbox/plugins/slideshow";
+import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
-import { Zoom } from "yet-another-react-lightbox/plugins/zoom";
+import Zoom from "yet-another-react-lightbox/plugins/zoom";
 
 function ImageGallery({ images }: { images: ImageWithThumbnail[] }) {
   const [index, setIndex] = useState(-1);
@@ -30,8 +29,16 @@ function ImageGallery({ images }: { images: ImageWithThumbnail[] }) {
       <PhotoAlbum
         layout="masonry"
         photos={images}
-        renderPhoto={Image}
-        onClick={(event, photo, index) => setIndex(index)}
+        componentsProps={{
+          image: {
+            loading: "lazy",
+          },
+        }}
+        onClick={(props) => {
+          // TODO: what is eslint complaining?
+          // eslint-disable-next-line react/prop-types
+          setIndex(props.index);
+        }}
       />
       <Lightbox
         slides={images}

@@ -1,7 +1,7 @@
 import Drawer from "@mui/material/Drawer";
 import FolderIcon from "@mui/icons-material/Folder";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
-import { TreeItem, TreeView } from "@mui/lab";
+import { SimpleTreeView, TreeItem } from "@mui/x-tree-view";
 import { useLocation, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import { Folders } from "./models";
@@ -13,7 +13,7 @@ import { getDefaultExpanded } from "./PathToExpaned";
 
 function generateTreeViewChildren(
   folders: Folders[],
-  navigateAndToggleExpand: (_path: string, _navigationAllowed: boolean) => void
+  navigateAndToggleExpand: (_path: string, _navigationAllowed: boolean) => void,
 ) {
   return (
     <>
@@ -25,7 +25,7 @@ function generateTreeViewChildren(
           return (
             <TreeItem
               key={f.fullPath}
-              nodeId={f.fullPath}
+              itemId={f.fullPath}
               label={label}
               onClick={() =>
                 navigateAndToggleExpand(f.fullPath, containsImages)
@@ -36,7 +36,7 @@ function generateTreeViewChildren(
         return (
           <TreeItem
             key={f.fullPath}
-            nodeId={f.fullPath}
+            itemId={f.fullPath}
             label={label}
             onClick={() => navigateAndToggleExpand(f.fullPath, containsImages)}
           >
@@ -51,21 +51,21 @@ function generateTreeViewChildren(
 const GenerateTreeView = ({ root }: { root: Folders }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [expanded, setExpanded] = useState<string[]>(
-    getDefaultExpanded(location.pathname)
+  const [expandedItems, setExpandedItems] = useState<string[]>(
+    getDefaultExpanded(location.pathname),
   );
 
   const toggleExpanded = (path: string) => {
-    if (expanded.includes(path)) {
-      setExpanded(expanded.filter((p) => p !== path));
+    if (expandedItems.includes(path)) {
+      setExpandedItems(expandedItems.filter((p) => p !== path));
     } else {
-      setExpanded([path, ...expanded]);
+      setExpandedItems([path, ...expandedItems]);
     }
   };
 
   const navigateAndToggleExpand = (
     path: string,
-    navigationAllowed: boolean
+    navigationAllowed: boolean,
   ) => {
     if (!navigationAllowed || location.pathname === path) {
       toggleExpanded(path);
@@ -76,15 +76,14 @@ const GenerateTreeView = ({ root }: { root: Folders }) => {
   };
 
   return (
-    <TreeView
+    <SimpleTreeView
       disableSelection
-      defaultCollapseIcon={<FolderOpenIcon />}
-      defaultExpandIcon={<FolderIcon />}
-      expanded={expanded}
+      slots={{ collapseIcon: FolderOpenIcon, expandIcon: FolderIcon }}
+      expandedItems={expandedItems}
     >
       <TreeItem
         key={root.fullPath}
-        nodeId={root.fullPath}
+        itemId={root.fullPath}
         label={`${root.name} - (${root.numberOfFiles})`}
         onClick={() => navigate(root.fullPath)}
       />
@@ -94,7 +93,7 @@ const GenerateTreeView = ({ root }: { root: Folders }) => {
         // eslint-disable-next-line react/jsx-no-useless-fragment
         <></>
       )}
-    </TreeView>
+    </SimpleTreeView>
   );
 };
 

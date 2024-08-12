@@ -20,6 +20,6 @@ describe("getDefaultExpanded", () => {
     "should allow valid path: %s",
     ({ pathname, expanded }) => {
       expect(getDefaultExpanded(pathname).sort()).toEqual(expanded.sort());
-    }
+    },
   );
 });
