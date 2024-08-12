@@ -6,7 +6,6 @@ interface ImportMetaEnv {
   readonly VITE_FAVICON_HREF: string | undefined;
 }
 
-// eslint-disable-next-line no-unused-vars
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }
