@@ -1,4 +1,4 @@
-import { Photo } from "react-photo-album";
+import { Slide } from "yet-another-react-lightbox";
 
 export interface Folders {
   name: string;
@@ -7,6 +7,6 @@ export interface Folders {
   children: Folders[];
 }
 
-export interface ImageWithThumbnail extends Photo {
+export interface ImageWithThumbnail extends Slide {
   thumbnail: string;
 }

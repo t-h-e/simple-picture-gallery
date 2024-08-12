@@ -1,4 +1,3 @@
-import PhotoAlbum from "react-photo-album";
 import React, { useState } from "react";
 import { ImageWithThumbnail } from "./models";
 import { Lightbox } from "yet-another-react-lightbox";
@@ -9,6 +8,7 @@ import Slideshow from "yet-another-react-lightbox/plugins/slideshow";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
+import { ImageList, ImageListItem } from "@mui/material";
 
 function ImageGallery({ images }: { images: ImageWithThumbnail[] }) {
   const [index, setIndex] = useState(-1);
@@ -21,25 +21,19 @@ function ImageGallery({ images }: { images: ImageWithThumbnail[] }) {
     );
   }
 
-  //  For all kind of settings see:
-  // https://react-photo-album.com/examples/playground
-  // https://codesandbox.io/s/github/igordanchenko/react-photo-album/tree/main/examples/playground
   return (
     <>
-      <PhotoAlbum
-        layout="masonry"
-        photos={images}
-        componentsProps={{
-          image: {
-            loading: "lazy",
-          },
-        }}
-        onClick={(props) => {
-          // TODO: what is eslint complaining?
-          // eslint-disable-next-line react/prop-types
-          setIndex(props.index);
-        }}
-      />
+      <ImageList variant="masonry" cols={3} gap={8}>
+        {images.map((item, index) => (
+          <ImageListItem key={item.thumbnail}>
+            <img
+              src={item.thumbnail}
+              loading="lazy"
+              onClick={() => setIndex(index)}
+            />
+          </ImageListItem>
+        ))}
+      </ImageList>
       <Lightbox
         slides={images}
         open={index >= 0}
