@@ -3,9 +3,9 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "react-inject-env": "2.1.0"
+    "@import-meta-env/cli": "^0.6.9"
   },
   "scripts": {
-    "set-environment": "npx react-inject-env set"
+    "set-environment": "npx import-meta-env -x .env.example"
   }
 }

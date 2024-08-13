@@ -9,10 +9,10 @@
     "format:check": "prettier --check \"**/*.+(ts|tsx)\"",
     "lint": "eslint src/**",
     "lint:fix": "eslint --fix src/**",
-    "client:build": "vite build",
+    "client:build": "vite build && npm run set-environment",
     "client:run": "npm run client:build && npm run client:start",
     "client:start": "vite",
-    "preview": "vite preview",
+    "set-environment": "npx import-meta-env -x .env.example",
     "client:test": "TODO",
     "test": "jest"
   },

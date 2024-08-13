@@ -36,7 +36,11 @@ function ImageGalleryLayout() {
     setImages([]);
     setError(false);
     setImagesLoaded(false);
-    fetch(`/images${location.pathname}`)
+    fetch(`/images${location.pathname}`, {
+      headers: {
+        Accept: "application/json",
+      },
+    })
       .then((res) => res.json())
       .then((data) => {
         if (data.images === undefined) {
@@ -53,7 +57,11 @@ function ImageGalleryLayout() {
   }, [location.pathname]);
 
   useEffect(() => {
-    fetch("/directories")
+    fetch("/directories", {
+      headers: {
+        Accept: "application/json",
+      },
+    })
       .then((res) => res.json())
       .then((data) => setFolders(data));
   }, []);
