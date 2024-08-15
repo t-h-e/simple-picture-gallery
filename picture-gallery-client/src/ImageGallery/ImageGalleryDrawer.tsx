@@ -11,6 +11,7 @@ import { Chip, useTheme } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { smallScreenMediaQuery } from "../ImageGalleryLayout";
 import { getDefaultExpanded } from "./PathToExpaned";
+import Typography from "@mui/material/Typography";
 
 function generateTreeViewChildren(
   folders: Folders[],
@@ -141,18 +142,24 @@ export const ImageGalleryDrawer = ({
 }: {
   open: boolean;
   drawerWidth: number;
-  folders: Folders;
+  folders: Folders | undefined;
   handleDrawerToggle: () => void;
 }) => {
   const theme = useTheme();
   const smallScreen = !useMediaQuery(smallScreenMediaQuery);
 
-  const drawerContent = (
-    <>
-      <Toolbar sx={{ marginBottom: 3 }} />
-      <GenerateTreeView root={folders} />
-    </>
-  );
+  const drawerContent =
+    folders != undefined ? (
+      <>
+        <Toolbar sx={{ marginBottom: 3 }} />
+        <GenerateTreeView root={folders} />
+      </>
+    ) : (
+      <>
+        <Toolbar sx={{ marginBottom: 3 }} />
+        <Typography sx={{ marginLeft: 2 }}>Loading folders...</Typography>
+      </>
+    );
 
   return smallScreen ? (
     <Drawer

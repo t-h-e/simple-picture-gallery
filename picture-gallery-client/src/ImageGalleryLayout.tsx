@@ -18,12 +18,7 @@ function ImageGalleryLayout() {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [images, setImages] = useState<ImageWithThumbnail[]>([]);
 
-  const [folders, setFolders] = useState<Folders>({
-    name: "Home",
-    fullPath: "/",
-    numberOfFiles: 0,
-    children: [],
-  });
+  const [folders, setFolders] = useState<Folders | undefined>(undefined);
 
   const location = useLocation();
   const navigate = useNavigate();
