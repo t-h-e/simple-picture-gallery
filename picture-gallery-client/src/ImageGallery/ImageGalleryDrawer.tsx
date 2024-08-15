@@ -1,12 +1,13 @@
 import Drawer from "@mui/material/Drawer";
 import FolderIcon from "@mui/icons-material/Folder";
 import FolderOpenIcon from "@mui/icons-material/FolderOpen";
+import PhotoOutlined from "@mui/icons-material/PhotoOutlined";
 import { SimpleTreeView, TreeItem } from "@mui/x-tree-view";
 import { useLocation, useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { Folders } from "./models";
 import Toolbar from "@mui/material/Toolbar";
-import { useTheme } from "@mui/material";
+import { Chip, useTheme } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { smallScreenMediaQuery } from "../ImageGalleryLayout";
 import { getDefaultExpanded } from "./PathToExpaned";
@@ -19,7 +20,13 @@ function generateTreeViewChildren(
     <>
       {folders.map((f) => {
         const label =
-          f.numberOfFiles === 0 ? f.name : `${f.name} - (${f.numberOfFiles})`;
+          f.numberOfFiles === 0 ? (
+            f.name
+          ) : (
+            <>
+              {f.name} <Chip label={f.numberOfFiles} size="small" />
+            </>
+          );
         const containsImages = f.numberOfFiles > 0;
         if (f.children.length === 0) {
           return (
@@ -48,12 +55,28 @@ function generateTreeViewChildren(
   );
 }
 
+const calcFolderWithItem = (
+  cur: Folders,
+  calculated: Set<string>,
+): Set<string> => {
+  if (cur.numberOfFiles > 0 || cur.children.length == 0) {
+    calculated.add(cur.fullPath);
+  }
+  cur.children.forEach((a) => calcFolderWithItem(a, calculated));
+  return calculated;
+};
+
 const GenerateTreeView = ({ root }: { root: Folders }) => {
   const location = useLocation();
   const navigate = useNavigate();
+  const folderFullPathContainingPhotos = useMemo(
+    () => calcFolderWithItem(root, new Set()),
+    [root],
+  );
   const [expandedItems, setExpandedItems] = useState<string[]>(
     getDefaultExpanded(location.pathname),
   );
+  const [selectedItem, setSelectedItem] = useState<string>(location.pathname);
 
   const toggleExpanded = (path: string) => {
     if (expandedItems.includes(path)) {
@@ -77,14 +100,27 @@ const GenerateTreeView = ({ root }: { root: Folders }) => {
 
   return (
     <SimpleTreeView
-      disableSelection
-      slots={{ collapseIcon: FolderOpenIcon, expandIcon: FolderIcon }}
+      slots={{
+        collapseIcon: FolderOpenIcon,
+        expandIcon: FolderIcon,
+        endIcon: PhotoOutlined,
+      }}
       expandedItems={expandedItems}
+      selectedItems={selectedItem}
+      onSelectedItemsChange={(event, itemId) => {
+        if (itemId != null && folderFullPathContainingPhotos.has(itemId)) {
+          setSelectedItem(itemId);
+        }
+      }}
     >
       <TreeItem
         key={root.fullPath}
         itemId={root.fullPath}
-        label={`${root.name} - (${root.numberOfFiles})`}
+        label={
+          <>
+            {root.name} <Chip label={root.numberOfFiles} size="small" />
+          </>
+        }
         onClick={() => navigate(root.fullPath)}
       />
       {root.children.length > 0 ? (
