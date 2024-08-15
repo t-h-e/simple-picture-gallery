@@ -11,7 +11,7 @@ const isImageProcessable = async (filePath: string): Promise<boolean> =>
     .then(() => true)
     .catch((err) => {
       consoleLogger.error(
-        `Reading metadata from ${filePath} produced the following error: ${err.message}`
+        `Reading metadata from ${filePath} produced the following error: ${err.message}`,
       );
       return false;
     });
@@ -21,14 +21,12 @@ export const walk = async (dirPath: string): Promise<Folders> => {
     withFileTypes: true,
   });
 
-  dirEnts.filter((f) => f.isFile());
-
   const numberOfFiles = (
     await Promise.all(
       dirEnts
         .filter((f) => f.isFile())
         .map((f) => path.posix.join(publicPath, dirPath, f.name))
-        .map(isImageProcessable)
+        .map(isImageProcessable),
     )
   ).filter((a) => a).length;
 
@@ -36,7 +34,7 @@ export const walk = async (dirPath: string): Promise<Folders> => {
     dirEnts
       .filter((d) => d.isDirectory())
       .filter((d) => !d.name.includes(thumbnailPath.substring(1)))
-      .map((d) => walk(path.posix.join(dirPath, d.name)))
+      .map((d) => walk(path.posix.join(dirPath, d.name))),
   );
 
   return {
