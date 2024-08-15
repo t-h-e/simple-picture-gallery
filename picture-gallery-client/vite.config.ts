@@ -19,7 +19,9 @@ export default defineConfig(() => {
     ],
     server: {
       proxy: {
-        "/images/": {
+        // Should only match in case header accepts JSON, otherwise vite should handle it and not the proxy
+        // Could not find a way to do that
+        "/images": {
           target: "http://localhost:3001",
           changeOrigin: true,
           secure: false,
