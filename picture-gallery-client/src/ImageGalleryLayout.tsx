@@ -2,12 +2,18 @@ import React, { useEffect, useState } from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import Box from "@mui/material/Box";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Folders, ImageWithThumbnail } from "./ImageGallery/models";
+import {
+  FolderPreview,
+  Folders,
+  ImageWithThumbnail,
+} from "./ImageGallery/models";
 import { ImageGalleryAppBar } from "./ImageGallery/ImageGalleryAppBar";
 import { ImageGalleryDrawer } from "./ImageGallery/ImageGalleryDrawer";
-import ImageGallery from "./ImageGallery/ImageGallery";
+import { ImageGallery } from "./ImageGallery/ImageGallery";
 import { Spinner } from "./ImageGallery/Spinner";
 import Toolbar from "@mui/material/Toolbar";
+import { Chip, Divider } from "@mui/material";
+import { FolderGallery } from "./ImageGallery/FolderGallery";
 
 const drawerWidth = 240;
 export const smallScreenMediaQuery = `(min-width:${drawerWidth * 3}px)`;
@@ -19,7 +25,9 @@ function ImageGalleryLayout() {
   const [images, setImages] = useState<ImageWithThumbnail[]>([]);
 
   const [folders, setFolders] = useState<Folders | undefined>(undefined);
-
+  const [foldersPreview, setFoldersPreview] = useState<
+    FolderPreview[] | undefined
+  >([]);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -28,6 +36,7 @@ function ImageGalleryLayout() {
   }
 
   useEffect(() => {
+    setFoldersPreview(undefined);
     setImages([]);
     setError(false);
     setImagesLoaded(false);
@@ -48,6 +57,15 @@ function ImageGalleryLayout() {
           setImages(data.images);
           setImagesLoaded(true);
         }
+      });
+    fetch(`/folderspreview${location.pathname}`, {
+      headers: {
+        Accept: "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setFoldersPreview(data);
       });
   }, [location.pathname]);
 
@@ -85,7 +103,32 @@ function ImageGalleryLayout() {
       />
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <Toolbar />
-        {imagesLoaded ? <ImageGallery images={images} /> : <Spinner />}
+        {!imagesLoaded || !foldersPreview ? (
+          <Spinner />
+        ) : (
+          <>
+            {foldersPreview.length > 0 && (
+              <>
+                <Divider>
+                  <Chip label="Folders" size="small" />
+                </Divider>
+                <FolderGallery folders={foldersPreview} />
+              </>
+            )}
+            {images.length > 0 && foldersPreview.length > 0 && (
+              <Divider>
+                <Chip label="Images" size="small" />
+              </Divider>
+            )}
+            {images.length > 0 && <ImageGallery images={images} />}
+            {images.length == 0 && foldersPreview.length == 0 && (
+              <p>
+                No images available. You may want to add images in your root
+                directory.
+              </p>
+            )}
+          </>
+        )}
       </Box>
     </Box>
   );

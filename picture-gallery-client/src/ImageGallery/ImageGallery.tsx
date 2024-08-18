@@ -9,21 +9,15 @@ import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 import Zoom from "yet-another-react-lightbox/plugins/zoom";
 import { ImageList, ImageListItem } from "@mui/material";
+import { useColumns } from "../util/responsive";
 
-function ImageGallery({ images }: { images: ImageWithThumbnail[] }) {
+export const ImageGallery = ({ images }: { images: ImageWithThumbnail[] }) => {
   const [index, setIndex] = useState(-1);
-
-  if (images.length === 0) {
-    return (
-      <p>
-        No images available. You may want to add images in your root directory.
-      </p>
-    );
-  }
+  const columns = useColumns();
 
   return (
     <>
-      <ImageList variant="masonry" cols={3} gap={8}>
+      <ImageList variant="masonry" cols={columns} gap={8}>
         {images.map((item, index) => (
           <ImageListItem key={item.thumbnail}>
             <img
@@ -50,6 +44,4 @@ function ImageGallery({ images }: { images: ImageWithThumbnail[] }) {
       />
     </>
   );
-}
-
-export default ImageGallery;
+};

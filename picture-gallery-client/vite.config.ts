@@ -31,6 +31,11 @@ export default defineConfig(() => {
           changeOrigin: true,
           secure: false,
         },
+        "/folderspreview": {
+          target: "http://localhost:3001",
+          changeOrigin: true,
+          secure: false,
+        },
         "/staticImages": {
           target: "http://localhost:3001",
           changeOrigin: true,

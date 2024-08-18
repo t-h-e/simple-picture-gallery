@@ -25,6 +25,8 @@ RUN mkdir built && \
 
 FROM node:16.14.2-alpine
 
+ENV NODE_ENV=production
+
 COPY --from=client-builder --chown=node:node /usr/src/app/picture-gallery-client/built /usr/src/app/picture-gallery-client/
 COPY --from=server-builder --chown=node:node /usr/src/app/picture-gallery-server/built /usr/src/app/picture-gallery-server/
 

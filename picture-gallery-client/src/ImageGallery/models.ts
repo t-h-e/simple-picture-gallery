@@ -7,6 +7,13 @@ export interface Folders {
   children: Folders[];
 }
 
+export interface FolderPreview {
+  name: string;
+  fullPath: string;
+  numberOfFiles: number;
+  imagePreviewSrc: string | undefined;
+}
+
 export interface ImageWithThumbnail extends Slide {
   thumbnail: string;
 }

@@ -3,48 +3,29 @@ import express from "express";
 import sharp from "sharp";
 import path from "path";
 import natsort from "natsort";
-import { publicPath, thumbnailPath, thumbnailPublicPath } from "../paths";
+import { publicPath } from "../paths";
 import { a, Folder, Image } from "../models";
 import { createThumbnailAsyncForImage } from "../thumbnails";
 import { consoleLogger } from "../logging";
 import { securityValidation } from "./securityChecks";
+import {
+  getRequestedPath,
+  getSrc,
+  getThumbnail,
+  readThumbnails,
+} from "./common";
 
 const notEmpty = <TValue>(
-  value: TValue | void | null | undefined
+  value: TValue | void | null | undefined,
 ): value is TValue => {
   return value !== null && value !== undefined;
 };
-
-const getRequestedPath = (req: express.Request): string =>
-  req.params[1] === undefined || req.params[1] === "/" ? "" : req.params[1];
-
-const readThumbnails = (requestedPath: string): string[] => {
-  const requestedThumbnailPath = path.posix.join(
-    thumbnailPublicPath,
-    requestedPath
-  );
-  return fs.existsSync(requestedThumbnailPath)
-    ? fs.readdirSync(requestedThumbnailPath)
-    : [];
-};
-
-const getSrc = (requestedPath: string, f: Dirent): string =>
-  path.posix.join("/staticImages", requestedPath, f.name);
-
-const getThumbnail = (
-  thumbnailExists: boolean,
-  requestedPath: string,
-  f: Dirent
-): string =>
-  thumbnailExists
-    ? path.posix.join("/staticImages", thumbnailPath, requestedPath, f.name)
-    : getSrc(requestedPath, f);
 
 const toImage = (
   metadata: sharp.Metadata,
   thumbnailExists: boolean,
   requestedPath: string,
-  f: Dirent
+  f: Dirent,
 ): Image => {
   const widthAndHeightSwap = metadata.orientation > 4; // see https://exiftool.org/TagNames/EXIF.html
   return a<Image>({
@@ -58,7 +39,7 @@ const toImage = (
 const getImagesToBeLoaded = (
   dirents: Dirent[],
   thumbnails: string[],
-  requestedPath: string
+  requestedPath: string,
 ): Promise<Image | void>[] =>
   dirents
     .filter((f) => f.isFile())
@@ -73,22 +54,22 @@ const getImagesToBeLoaded = (
       return sharp(path.posix.join(publicPath, requestedPath, f.name))
         .metadata()
         .then((metadata) =>
-          toImage(metadata, thumbnailExists, requestedPath, f)
+          toImage(metadata, thumbnailExists, requestedPath, f),
         )
         .catch((err) => {
           consoleLogger.error(
             `Reading metadata from ${path.posix.join(
               publicPath,
               requestedPath,
-              f.name
-            )} produced the following error: ${err.message}`
+              f.name,
+            )} produced the following error: ${err.message}`,
           );
         });
     });
 
 export const getImages = async (
   req: express.Request,
-  res: express.Response
+  res: express.Response,
 ) => {
   const requestedPath = getRequestedPath(req);
 
@@ -103,7 +84,7 @@ export const getImages = async (
     const imagesToBeLoaded = getImagesToBeLoaded(
       dirents,
       thumbnails,
-      requestedPath
+      requestedPath,
     );
     const images = (await Promise.all(imagesToBeLoaded)).filter(notEmpty);
     res.json(a<Folder>({ images }));
