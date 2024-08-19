@@ -1,4 +1,4 @@
-FROM node:16.14.2-alpine as client-builder
+FROM node:22.2.0-alpine as client-builder
 
 COPY picture-gallery-client/package*.json /usr/src/app/picture-gallery-client/
 WORKDIR /usr/src/app/picture-gallery-client
@@ -10,9 +10,11 @@ RUN mkdir built && \
     mv build built && \
     mv package.minimize.docker.json built/package.json && \
     cp package-lock.json built && \
+    cp .env.example built && \
+    cp .env built && \
     npm ci --prefix ./built --only=production
 
-FROM node:16.14.2-alpine as server-builder
+FROM node:22.2.0-alpine as server-builder
 
 COPY picture-gallery-server/package*.json /usr/src/app/picture-gallery-server/
 WORKDIR /usr/src/app/picture-gallery-server
@@ -23,7 +25,7 @@ RUN npm run server:build
 RUN mkdir built && \
     mv dist node_modules built
 
-FROM node:16.14.2-alpine
+FROM node:22.2.0-alpine
 
 ENV NODE_ENV=production
 

@@ -2,6 +2,10 @@
 
 ## Getting Started
 
+### Information
+
+Folders should only contain images and folders. Folders should not contain any other files.
+
 ### Docker
 
 ```shell
