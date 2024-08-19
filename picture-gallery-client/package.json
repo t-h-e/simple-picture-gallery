@@ -14,17 +14,17 @@
     "client:start": "vite",
     "set-environment": "npx import-meta-env -x .env.example",
     "client:test": "TODO",
-    "test": "jest"
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@emotion/react": "^11.13.0",
     "@emotion/styled": "^11.13.0",
-    "@import-meta-env/unplugin": "^0.5.2",
     "@import-meta-env/cli": "^0.6.9",
+    "@import-meta-env/unplugin": "^0.5.2",
     "@mui/icons-material": "^5.16.7",
-    "@mui/x-tree-view": "^7.12.1",
     "@mui/material": "^5.16.7",
-    "@types/jest": "^29.5.12",
+    "@mui/x-tree-view": "^7.12.1",
     "@types/node": "^22.2.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
@@ -46,23 +46,23 @@
     "yet-another-react-lightbox": "^3.21.3"
   },
   "devDependencies": {
-    "@testing-library/jest-dom": "^6.4.8",
     "@testing-library/react": "^16.0.0",
     "@testing-library/user-event": "^14.5.2",
     "@typescript-eslint/eslint-plugin": "8.0.1",
     "@typescript-eslint/parser": "8.0.1",
-    "@vitejs/plugin-react":"^4.3.1",
+    "@vitejs/plugin-react": "^4.3.1",
+    "@vitest/coverage-v8": "^2.0.5",
+    "jsdom": "^24.1.1",
     "prettier": "^3.3.3",
-    "ts-jest": "^29.2.4",
     "ts-node": "^10.9.2",
     "vite": "^5.4.0",
     "vite-plugin-eslint": "^1.8.1",
-    "vite-tsconfig-paths": "^5.0.1"
+    "vite-tsconfig-paths": "^5.0.1",
+    "vitest": "^2.0.5"
   },
   "eslintConfig": {
     "extends": [
-      "react-app",
-      "react-app/jest"
+      "react-app"
     ]
   },
   "browserslist": {
