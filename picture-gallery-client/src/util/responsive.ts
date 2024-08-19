@@ -2,7 +2,6 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 const breakpoints = Object.freeze([1200, 600, 300, 0]);
 
-// TODO: never can be one column at the moment
 export function useColumns(): number {
   const values = [5, 4, 3, 2];
   const index = breakpoints

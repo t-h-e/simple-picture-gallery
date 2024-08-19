@@ -13,9 +13,8 @@
     "client:run": "npm run client:build && npm run client:start",
     "client:start": "vite",
     "set-environment": "npx import-meta-env -x .env.example",
-    "client:test": "TODO",
-    "test": "vitest",
-    "coverage": "vitest run --coverage"
+    "client:test": "vitest",
+    "client:coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@emotion/react": "^11.13.0",
