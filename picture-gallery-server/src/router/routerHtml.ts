@@ -1,12 +1,13 @@
 import express from "express";
 import * as path from "path";
+import { ServeStaticOptions } from "serve-static";
 import { publicPath } from "../paths";
 
 export const routerHtml = express.Router();
 
-const withCaching = {
+const withCaching: ServeStaticOptions = {
   maxAge: 2592000000,
-  setHeaders(res, _) {
+  setHeaders: (res, _) => {
     res.setHeader(
       "Expires",
       new Date(Date.now() + 2592000000 * 30).toUTCString(),
