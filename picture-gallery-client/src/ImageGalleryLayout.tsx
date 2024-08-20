@@ -36,10 +36,29 @@ function ImageGalleryLayout() {
   }
 
   useEffect(() => {
+    fetch("/directories", {
+      headers: {
+        Accept: "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => setFolders(data));
+  }, []);
+
+  useEffect(() => {
     setFoldersPreview(undefined);
     setImages([]);
     setError(false);
     setImagesLoaded(false);
+    fetch(`/folderspreview${location.pathname}`, {
+      headers: {
+        Accept: "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setFoldersPreview(data);
+      });
     fetch(`/images${location.pathname}`, {
       headers: {
         Accept: "application/json",
@@ -58,26 +77,7 @@ function ImageGalleryLayout() {
           setImagesLoaded(true);
         }
       });
-    fetch(`/folderspreview${location.pathname}`, {
-      headers: {
-        Accept: "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setFoldersPreview(data);
-      });
   }, [location.pathname]);
-
-  useEffect(() => {
-    fetch("/directories", {
-      headers: {
-        Accept: "application/json",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => setFolders(data));
-  }, []);
 
   if (error) {
     return (
