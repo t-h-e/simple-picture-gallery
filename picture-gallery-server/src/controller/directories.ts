@@ -1,11 +1,12 @@
 import fs from "fs";
 import * as path from "path";
 import express from "express";
-import { a, FolderPreview, Folders } from "../models";
+import { a, FolderPreview, Folders, Image } from "../models";
 import { publicPath, thumbnailPath, thumbnailPublicPath } from "../paths";
 import { securityValidation } from "./securityChecks";
-import { getRequestedPath, getThumbnail } from "./common";
+import { getRequestedPath, notEmpty } from "./common";
 import { consoleLogger } from "../logging";
+import { getImage } from "./images";
 
 export const walk = async (dirPath: string): Promise<Folders> => {
   const dirEnts = fs.readdirSync(path.posix.join(publicPath, dirPath), {
@@ -29,7 +30,9 @@ export const walk = async (dirPath: string): Promise<Folders> => {
   };
 };
 
-const getFirstImageInFolder = (dirPath: string): string | undefined => {
+const getFirstImageInFolder = async (
+  dirPath: string,
+): Promise<Image | void> => {
   const dirs = [dirPath];
   while (dirs.length > 0) {
     const curPath = dirs.shift();
@@ -38,30 +41,22 @@ const getFirstImageInFolder = (dirPath: string): string | undefined => {
     });
     for (let i = 0; i < dirContent.length; i += 1) {
       const content = dirContent[i];
-      const filePath = path.posix.join(curPath, content.name);
       if (content.isFile()) {
-        return getThumbnail(
-          fs.existsSync(path.posix.join(thumbnailPublicPath, filePath)),
-          curPath,
-          content,
+        const thumbnailExists = fs.existsSync(
+          path.posix.join(thumbnailPublicPath, curPath, content.name),
         );
+        return getImage(content, curPath, thumbnailExists);
       }
       if (content.isDirectory()) {
-        dirs.push(filePath);
+        const nextDirPath = path.posix.join(curPath, content.name);
+        dirs.push(nextDirPath);
       }
     }
   }
   return undefined;
 };
 
-const getNumberOfFiles = (dirPath: string): number =>
-  fs
-    .readdirSync(path.posix.join(publicPath, dirPath), {
-      withFileTypes: true,
-    })
-    .filter((d) => d.isFile()).length;
-
-export const getFolderPreview = (
+export const getFolderPreview = async (
   req: express.Request,
   res: express.Response,
 ) => {
@@ -77,17 +72,23 @@ export const getFolderPreview = (
       .filter((d) => d.isDirectory())
       .filter((d) => !d.name.includes(thumbnailPath.substring(1)));
 
-    res.json(
-      dirents.map((dir) => {
-        const fullPath = path.posix.join(requestedPath, dir.name);
+    const folderPreviewsToLoad = dirents.map(async (dir) => {
+      const fullPath = path.posix.join(requestedPath, dir.name);
+      const imageForPreview = await getFirstImageInFolder(fullPath);
+      if (notEmpty(imageForPreview)) {
         return a<FolderPreview>({
           name: dir.name,
           fullPath,
-          numberOfFiles: getNumberOfFiles(fullPath),
-          imagePreviewSrc: getFirstImageInFolder(fullPath),
+          imagePreview: imageForPreview,
         });
-      }),
+      }
+      return undefined;
+    });
+
+    const folderPreviews = (await Promise.all(folderPreviewsToLoad)).filter(
+      notEmpty,
     );
+    res.json(folderPreviews);
   } catch (e) {
     consoleLogger.warn(`Error when trying to access ${req.path}: ${e}`);
     res.status(400).json({ message: `Path ${req.path} not accessible.` });

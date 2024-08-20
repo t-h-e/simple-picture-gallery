@@ -14,11 +14,11 @@ export const createThumbnailAsyncForImage = (image: string) => {
     .then((info) => {
       const width = Math.max(
         Math.min(info.width, minimumPixelForThumbnail),
-        Math.round((info.width * percentage) / 100)
+        Math.round((info.width * percentage) / 100),
       );
       const height = Math.max(
         Math.min(info.height, minimumPixelForThumbnail),
-        Math.round((info.height * percentage) / 100)
+        Math.round((info.height * percentage) / 100),
       );
 
       fs.mkdir(
@@ -29,12 +29,12 @@ export const createThumbnailAsyncForImage = (image: string) => {
             .withMetadata()
             .resize(info.width > info.height ? { width } : { height })
             .toFile(`${path.posix.join(thumbnailPublicPath, image)}`);
-        }
+        },
       );
     })
     .catch((err) => {
       consoleLogger.error(
-        `Thumbnail creation of ${publicImagePath} produced the following error: ${err.message}`
+        `Thumbnail creation of ${publicImagePath} produced the following error: ${err.message}`,
       );
     });
 };
@@ -50,7 +50,7 @@ export const initThumbnailsAsync = (dirPath: string) => {
     recursive: true,
   });
   const thumbnails = fs.readdirSync(
-    path.posix.join(thumbnailPublicPath, dirPath)
+    path.posix.join(thumbnailPublicPath, dirPath),
   );
 
   dirEnts

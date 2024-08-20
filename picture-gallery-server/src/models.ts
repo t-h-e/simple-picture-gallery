@@ -19,8 +19,7 @@ export interface Folders {
 export interface FolderPreview {
   name: string;
   fullPath: string;
-  numberOfFiles: number;
-  imagePreviewSrc: string | undefined;
+  imagePreview: Image;
 }
 
 export const a = <T>(v: T): T => {

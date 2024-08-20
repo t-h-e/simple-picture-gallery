@@ -109,14 +109,14 @@ function ImageGalleryLayout() {
           <>
             {foldersPreview.length > 0 && (
               <>
-                <Divider>
+                <Divider style={{ marginBottom: "10px" }}>
                   <Chip label="Folders" size="small" />
                 </Divider>
                 <FolderGallery folders={foldersPreview} />
               </>
             )}
             {images.length > 0 && foldersPreview.length > 0 && (
-              <Divider>
+              <Divider style={{ marginBottom: "10px" }}>
                 <Chip label="Images" size="small" />
               </Divider>
             )}
