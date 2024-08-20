@@ -13,7 +13,7 @@ export interface PhotoWithFolder extends ImageWithThumbnail {
 const PreviewFolder = ({ folder }: { folder: FolderPreview }) => {
   return (
     <img
-      src={folder.imagePreview.src}
+      src={folder.imagePreview.thumbnail}
       alt={folder.name}
       loading="lazy"
       style={{

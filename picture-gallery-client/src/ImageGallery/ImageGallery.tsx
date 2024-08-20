@@ -20,10 +20,10 @@ export const ImageGallery = ({ images }: { images: ImageWithThumbnail[] }) => {
     <>
       <MasonryPhotoAlbum
         photos={images}
-        componentsProps={{
-          image: {
-            loading: "lazy",
-          },
+        render={{
+          image: (props, context) => (
+            <img {...props} src={context.photo.thumbnail} loading={"lazy"} />
+          ),
         }}
         onClick={({ index }) => setIndex(index)}
       />
