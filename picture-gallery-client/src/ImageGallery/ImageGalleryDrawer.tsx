@@ -4,7 +4,7 @@ import FolderOpenIcon from "@mui/icons-material/FolderOpen";
 import PhotoOutlined from "@mui/icons-material/PhotoOutlined";
 import { SimpleTreeView, TreeItem } from "@mui/x-tree-view";
 import { useLocation, useNavigate } from "react-router-dom";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Folders } from "./models";
 import Toolbar from "@mui/material/Toolbar";
 import { Chip, useTheme } from "@mui/material";
@@ -15,7 +15,7 @@ import Typography from "@mui/material/Typography";
 
 function generateTreeViewChildren(
   folders: Folders[],
-  navigateAndToggleExpand: (_path: string, _navigationAllowed: boolean) => void,
+  navigateAndToggleExpand: (_path: string) => void,
 ) {
   return (
     <>
@@ -28,16 +28,13 @@ function generateTreeViewChildren(
               {f.name} <Chip label={f.numberOfFiles} size="small" />
             </>
           );
-        const containsImages = f.numberOfFiles > 0;
         if (f.children.length === 0) {
           return (
             <TreeItem
               key={f.fullPath}
               itemId={f.fullPath}
               label={label}
-              onClick={() =>
-                navigateAndToggleExpand(f.fullPath, containsImages)
-              }
+              onClick={() => navigateAndToggleExpand(f.fullPath)}
             />
           );
         }
@@ -46,7 +43,7 @@ function generateTreeViewChildren(
             key={f.fullPath}
             itemId={f.fullPath}
             label={label}
-            onClick={() => navigateAndToggleExpand(f.fullPath, containsImages)}
+            onClick={() => navigateAndToggleExpand(f.fullPath)}
           >
             {generateTreeViewChildren(f.children, navigateAndToggleExpand)}
           </TreeItem>
@@ -56,28 +53,31 @@ function generateTreeViewChildren(
   );
 }
 
-const calcFolderWithItem = (
-  cur: Folders,
-  calculated: Set<string>,
-): Set<string> => {
-  if (cur.numberOfFiles > 0 || cur.children.length == 0) {
-    calculated.add(cur.fullPath);
-  }
-  cur.children.forEach((a) => calcFolderWithItem(a, calculated));
-  return calculated;
-};
-
 const GenerateTreeView = ({ root }: { root: Folders }) => {
   const location = useLocation();
   const navigate = useNavigate();
-  const folderFullPathContainingPhotos = useMemo(
-    () => calcFolderWithItem(root, new Set()),
-    [root],
-  );
   const [expandedItems, setExpandedItems] = useState<string[]>(
     getDefaultExpanded(location.pathname),
   );
   const [selectedItem, setSelectedItem] = useState<string>(location.pathname);
+
+  // TODO: clean this effect up. See also `getDefaultExpanded`
+  useEffect(() => {
+    let curPathname = location.pathname.startsWith("/")
+      ? location.pathname.slice(1)
+      : location.pathname;
+    while (curPathname.endsWith("/")) {
+      curPathname = curPathname.slice(0, -1);
+    }
+    const parentPathname = curPathname.substring(
+      0,
+      curPathname.lastIndexOf("/"),
+    );
+    if (!expandedItems.includes(parentPathname)) {
+      setExpandedItems([parentPathname, ...expandedItems]);
+    }
+    setSelectedItem(curPathname);
+  }, [location]);
 
   const toggleExpanded = (path: string) => {
     if (expandedItems.includes(path)) {
@@ -87,16 +87,11 @@ const GenerateTreeView = ({ root }: { root: Folders }) => {
     }
   };
 
-  const navigateAndToggleExpand = (
-    path: string,
-    navigationAllowed: boolean,
-  ) => {
-    if (!navigationAllowed || location.pathname === path) {
-      toggleExpanded(path);
-      return;
-    }
+  const navigateAndToggleExpand = (path: string) => {
     toggleExpanded(path);
-    navigate(path);
+    if (location.pathname !== path) {
+      navigate(path);
+    }
   };
 
   return (
@@ -109,7 +104,7 @@ const GenerateTreeView = ({ root }: { root: Folders }) => {
       expandedItems={expandedItems}
       selectedItems={selectedItem}
       onSelectedItemsChange={(event, itemId) => {
-        if (itemId != null && folderFullPathContainingPhotos.has(itemId)) {
+        if (itemId != null) {
           setSelectedItem(itemId);
         }
       }}

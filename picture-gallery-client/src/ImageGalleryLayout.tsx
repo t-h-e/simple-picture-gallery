@@ -123,7 +123,7 @@ function ImageGalleryLayout() {
             {images.length > 0 && <ImageGallery images={images} />}
             {images.length == 0 && foldersPreview.length == 0 && (
               <p>
-                No images available. You may want to add images in your root
+                No images available. You may want to add images to this
                 directory.
               </p>
             )}
