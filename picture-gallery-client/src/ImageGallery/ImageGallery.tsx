@@ -22,7 +22,7 @@ export const ImageGallery = ({ images }: { images: ImageWithThumbnail[] }) => {
         photos={images}
         render={{
           image: (props, context) => (
-            <img loading={"lazy"} {...props} src={context.photo.thumbnail} />
+            <img {...props} src={context.photo.thumbnail} />
           ),
         }}
         onClick={({ index }) => setIndex(index)}
