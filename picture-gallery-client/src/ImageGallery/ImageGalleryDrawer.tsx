@@ -132,16 +132,25 @@ const GenerateTreeView = ({ root }: { root: Folders }) => {
 export const ImageGalleryDrawer = ({
   open,
   drawerWidth,
-  folders,
   handleDrawerToggle,
 }: {
   open: boolean;
   drawerWidth: number;
-  folders: Folders | undefined;
   handleDrawerToggle: () => void;
 }) => {
   const theme = useTheme();
   const smallScreen = !useMediaQuery(smallScreenMediaQuery);
+  const [folders, setFolders] = useState<Folders | undefined>(undefined);
+
+  useEffect(() => {
+    fetch("/directories", {
+      headers: {
+        Accept: "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => setFolders(data));
+  }, []);
 
   const drawerContent =
     folders != undefined ? (
