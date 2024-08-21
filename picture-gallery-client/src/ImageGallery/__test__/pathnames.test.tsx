@@ -1,4 +1,4 @@
-import { getDefaultExpanded } from "../PathToExpaned";
+import { getDefaultExpanded } from "../pathnames";
 
 interface pathWithExpanded {
   pathname: string;

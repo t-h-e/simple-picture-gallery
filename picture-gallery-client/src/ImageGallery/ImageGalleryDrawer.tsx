@@ -10,7 +10,7 @@ import Toolbar from "@mui/material/Toolbar";
 import { Chip, useTheme } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { smallScreenMediaQuery } from "../ImageGalleryLayout";
-import { getDefaultExpanded } from "./PathToExpaned";
+import { getDefaultExpanded, getParentAndChildPath } from "./pathnames";
 import Typography from "@mui/material/Typography";
 
 function generateTreeViewChildren(
@@ -61,17 +61,9 @@ const GenerateTreeView = ({ root }: { root: Folders }) => {
   );
   const [selectedItem, setSelectedItem] = useState<string>(location.pathname);
 
-  // TODO: clean this effect up. See also `getDefaultExpanded`
   useEffect(() => {
-    let curPathname = location.pathname.startsWith("/")
-      ? location.pathname.slice(1)
-      : location.pathname;
-    while (curPathname.endsWith("/")) {
-      curPathname = curPathname.slice(0, -1);
-    }
-    const parentPathname = curPathname.substring(
-      0,
-      curPathname.lastIndexOf("/"),
+    const { parent: parentPathname, cur: curPathname } = getParentAndChildPath(
+      location.pathname,
     );
     if (!expandedItems.includes(parentPathname)) {
       setExpandedItems([parentPathname, ...expandedItems]);
