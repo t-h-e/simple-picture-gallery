@@ -1,6 +1,7 @@
 {
   "name": "simple-picture-gallery",
-  "version": "1.0.0",
+  "version": "0.0.1",
+  "license": "MIT",
   "dependencies": {
     "concurrently": "7.2.1",
     "npm-check-updates": "^17.0.6"
