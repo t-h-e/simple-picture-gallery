@@ -34,7 +34,7 @@ An easy way to run simple picture gallery is with docker.
 
 ```shell
 docker pull docker pull ghcr.io/t-h-e/simple-picture-gallery:latest
-docker run -p 3005:3001 -v /mnt/path/to/pictures:/usr/src/app/public --name my-picture-gallery ghcr.io/t-h-e/simple-picture-gallery:latest
+docker run -d -p 3005:3001 -v /mnt/path/to/pictures:/usr/src/app/public --name my-picture-gallery ghcr.io/t-h-e/simple-picture-gallery:latest
 ```
 
 #### Customization
@@ -44,13 +44,13 @@ Create an environment file `.env` containing any of the following properties to 
 ```properties
 VITE_TITLE=My Gallery
 VITE_APPBAR_COLOR=#F8AB2D
-VITE_FAVICON_HREF=<URL to your favicon>
+VITE_FAVICON_HREF=<URL to your favicon or remove this property>
 ```
 
 And run docker with `--env-file .env`
 
 ```shell
-docker run -p 3005:3001 -v /mnt/path/to/pictures:/usr/src/app/public --env-file .env --name my-picture-gallery ghcr.io/t-h-e/simple-picture-gallery:latest
+docker run -d -p 3005:3001 -v /mnt/path/to/pictures:/usr/src/app/public --env-file .env --name my-picture-gallery ghcr.io/t-h-e/simple-picture-gallery:latest
 ```
 
 ### Docker Compose

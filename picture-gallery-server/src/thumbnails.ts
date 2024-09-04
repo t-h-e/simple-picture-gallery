@@ -12,6 +12,9 @@ export const createThumbnailAsyncForImage = (image: string) => {
   sharp(publicImagePath)
     .metadata()
     .then((info) => {
+      if (info.width === undefined || info.height === undefined) {
+        return;
+      }
       const width = Math.max(
         Math.min(info.width, minimumPixelForThumbnail),
         Math.round((info.width * percentage) / 100),
@@ -25,6 +28,9 @@ export const createThumbnailAsyncForImage = (image: string) => {
         path.posix.join(thumbnailPublicPath, path.dirname(image)),
         { recursive: true },
         () => {
+          if (info.width === undefined || info.height === undefined) {
+            return;
+          }
           sharp(publicImagePath)
             .withMetadata()
             .resize(info.width > info.height ? { width } : { height })

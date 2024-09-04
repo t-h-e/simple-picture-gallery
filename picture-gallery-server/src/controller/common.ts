@@ -38,3 +38,16 @@ export const notEmpty = <TValue>(
 ): value is TValue => {
   return value !== null && value !== undefined;
 };
+
+export const definedOrError = <TValue>(
+  value: TValue | void | null | undefined,
+): TValue => {
+  if (notEmpty(value)) {
+    return value;
+  }
+  throw Error("Value was not defined.");
+};
+
+export const definedOrZero = (
+  value: number | void | null | undefined,
+): number => (notEmpty(value) ? value : 0);

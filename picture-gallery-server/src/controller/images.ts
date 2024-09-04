@@ -8,6 +8,7 @@ import { a, Folder, Image } from "../models";
 import { consoleLogger } from "../logging";
 import { securityValidation } from "./securityChecks";
 import {
+  definedOrZero,
   getRequestedPath,
   getSrc,
   getThumbnail,
@@ -21,12 +22,15 @@ const toImage = (
   f: Dirent,
   thumbnailExists: boolean,
 ): Image => {
-  const widthAndHeightSwap = metadata.orientation > 4; // see https://exiftool.org/TagNames/EXIF.html
+  const widthAndHeightSwap =
+    metadata.orientation !== undefined && metadata.orientation > 4; // see https://exiftool.org/TagNames/EXIF.html
   return a<Image>({
     src: getSrc(filePath, f),
     thumbnail: getThumbnail(filePath, f, thumbnailExists),
-    width: widthAndHeightSwap ? metadata.height : metadata.width,
-    height: widthAndHeightSwap ? metadata.width : metadata.height,
+    width: definedOrZero(widthAndHeightSwap ? metadata.height : metadata.width),
+    height: definedOrZero(
+      widthAndHeightSwap ? metadata.width : metadata.height,
+    ),
   });
 };
 

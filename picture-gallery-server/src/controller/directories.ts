@@ -4,7 +4,7 @@ import express from "express";
 import { a, FolderPreview, Folders, Image } from "../models";
 import { publicPath, thumbnailPath, thumbnailPublicPath } from "../paths";
 import { securityValidation } from "./securityChecks";
-import { getRequestedPath, notEmpty } from "./common";
+import { definedOrError, getRequestedPath, notEmpty } from "./common";
 import { consoleLogger } from "../logging";
 import { getImage } from "./images";
 
@@ -35,7 +35,7 @@ const getFirstImageInFolder = async (
 ): Promise<Image | void> => {
   const dirs = [dirPath];
   while (dirs.length > 0) {
-    const curPath = dirs.shift();
+    const curPath = definedOrError(dirs.shift());
     const dirContent = fs.readdirSync(path.posix.join(publicPath, curPath), {
       withFileTypes: true,
     });
