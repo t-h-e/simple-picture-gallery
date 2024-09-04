@@ -1,4 +1,4 @@
-FROM node:22.2.0-alpine as client-builder
+FROM node:22.2.0-alpine AS client-builder
 
 COPY picture-gallery-client/package*.json /usr/src/app/picture-gallery-client/
 WORKDIR /usr/src/app/picture-gallery-client
@@ -14,7 +14,7 @@ RUN mkdir built && \
     cp .env built && \
     npm ci --prefix ./built --only=production
 
-FROM node:22.2.0-alpine as server-builder
+FROM node:22.2.0-alpine AS server-builder
 
 COPY picture-gallery-server/package*.json /usr/src/app/picture-gallery-server/
 WORKDIR /usr/src/app/picture-gallery-server
