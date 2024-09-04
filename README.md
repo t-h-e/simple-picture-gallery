@@ -102,7 +102,7 @@ http {
 
     location ~ /(images|directories|folderspreview) {
        proxy_cache picture_gallery_cache;
-       # cache is valid for 60 minutes. Reduce or increase this time according to your needs.
+       # cache is valid for 60 minutes. Increase or decrease according to your needs.
        proxy_cache_valid 200 302 60m;
        proxy_cache_min_uses 1;
        proxy_pass http://127.0.0.1:3005;
