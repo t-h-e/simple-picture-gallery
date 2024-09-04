@@ -89,10 +89,8 @@ In case you are using nginx as reverse proxy already, here is an example config 
 
 ```nginx
 http {
-
   proxy_cache_path /var/cache/nginx levels=1:2 keys_zone=picture_gallery_cache:10m max_size=100m inactive=60m use_temp_path=off;
-  
-  
+
   server {
     ...
 
@@ -109,7 +107,6 @@ http {
     }
 
     server_name gallery.domain.com
-
     ...
   }
 }
