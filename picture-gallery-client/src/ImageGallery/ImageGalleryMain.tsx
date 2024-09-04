@@ -72,7 +72,7 @@ export const ImageGalleryMain = ({
             </>
           )}
           {images.length > 0 && foldersPreview.length > 0 && (
-            <Divider style={{ marginBottom: "10px" }}>
+            <Divider style={{ marginBottom: "10px", marginTop: "10px" }}>
               <Chip label="Images" size="small" />
             </Divider>
           )}
