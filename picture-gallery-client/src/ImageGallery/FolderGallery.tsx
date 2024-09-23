@@ -3,8 +3,8 @@ import { FolderPreview, ImageWithThumbnail } from "./models";
 import { Link } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 
-import { ColumnsPhotoAlbum } from "react-photo-album";
-import "react-photo-album/columns.css";
+import { RowsPhotoAlbum } from "react-photo-album";
+import "react-photo-album/rows.css";
 
 export interface PhotoWithFolder extends ImageWithThumbnail {
   folderPreview: FolderPreview;
@@ -40,8 +40,23 @@ export const FolderGallery = ({ folders }: { folders: FolderPreview[] }) => {
 
   return (
     <>
-      <ColumnsPhotoAlbum
+      <RowsPhotoAlbum
         photos={foldersAsImages}
+        targetRowHeight={(containerWidth: number) => {
+          if (containerWidth >= 1000) {
+            return Math.min(230, containerWidth / 6);
+          } else if (containerWidth >= 600 && containerWidth < 1000) {
+            return containerWidth / 5;
+          } else if (containerWidth >= 300 && containerWidth < 600) {
+            return containerWidth / 4;
+          } else {
+            // containerWidth < 300
+            return containerWidth / 3;
+          }
+        }}
+        rowConstraints={{
+          singleRowMaxHeight: 230,
+        }}
         render={{
           image: (props, context) => (
             <PreviewFolder folder={context.photo.folderPreview} />
